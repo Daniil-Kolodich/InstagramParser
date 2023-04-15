@@ -10,8 +10,6 @@ public class InstagramContext : DbContext
 
     public InstagramContext(DbContextOptions options) : base(options)
     {
-        Database.EnsureDeleted();
-        Database.EnsureCreated();
     }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -24,14 +22,5 @@ public class InstagramContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new UserConfiguration());
-
-        modelBuilder.Entity<User>().HasData(new User
-        {
-            UserName = "Danon",
-            Email = "Email",
-            Password = "Password",
-            CreatedWhen = DateTime.Now,
-            Id = 4
-        });
     }
 }
