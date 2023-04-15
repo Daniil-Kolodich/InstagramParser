@@ -35,13 +35,14 @@ public sealed class Repository<TEntity> : IRepository<TEntity> where TEntity : E
         return (await _entities.AddAsync(entity)).Entity;
     }
 
-    public Task UpdateAsync(TEntity entity)
+    public void UpdateAsync(TEntity entity)
     {
-        throw new NotImplementedException();
+        _entities.Update(entity);
     }
 
-    public Task DeleteAsync(TEntity entity)
+    public void DeleteAsync(TEntity entity)
     {
-        throw new NotImplementedException();
+        // TODO: add support of soft delete as well
+        _entities.Remove(entity);
     }
 }
