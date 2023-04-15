@@ -1,5 +1,7 @@
 using Database.Context;
 using Database.Entities;
+using Database.Repository;
+using Database.Specification;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InstagranParser.Controllers;
@@ -8,15 +10,29 @@ namespace InstagranParser.Controllers;
 [Route("[controller]")]
 public class UsersController : ControllerBase
 {
-    private readonly InstagramContext _context;
-    public UsersController(InstagramContext context)
+    private readonly IRepository<User> _usersRepository;
+    public UsersController(IRepository<User> usersRepository)
     {
-        _context = context;
+        _usersRepository = usersRepository;
     }
 
-    [HttpGet(Name = "GetWeatherForecast")]
-    public IEnumerable<Entity> Get()
+    [HttpGet(nameof(GetName))]
+    public async Task<IEnumerable<User>> GetName()
     {
-        return _context.Users.ToList();
+        return await _usersRepository.GetAsync(new NameSpecification());
+    }
+    
+    [HttpGet(nameof(GetAll))]
+    public async Task<IEnumerable<User>> GetAll()
+    {
+        return await _usersRepository.GetAsync(new Specification<User>());
+    }
+}
+
+public class NameSpecification : Specification<User>
+{
+    public NameSpecification() : base((e) => e.Id > 3)
+    {
+        
     }
 }
