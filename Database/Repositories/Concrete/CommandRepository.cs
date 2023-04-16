@@ -26,7 +26,6 @@ public sealed class CommandRepository<TEntity> : ICommandRepository<TEntity> whe
 
     public void DeleteAsync(TEntity entity)
     {
-        // TODO: add support of soft delete as well
-        _entities.Remove(entity);
+        entity.IsDeleted = true;
     }
 }

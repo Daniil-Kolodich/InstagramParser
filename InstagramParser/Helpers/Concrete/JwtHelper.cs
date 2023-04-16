@@ -11,6 +11,7 @@ public class JwtHelper : IJwtHelper
 {
     private readonly JwtConfiguration _jwtConfiguration;
 
+    public static readonly string UserIdClaim = "UserId";
     public JwtHelper(IOptions<JwtConfiguration> jwtConfiguration)
     {
         _jwtConfiguration = jwtConfiguration.Value;
@@ -25,7 +26,7 @@ public class JwtHelper : IJwtHelper
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userId)
+                new Claim(UserIdClaim, userId)
             }),
             Audience = _jwtConfiguration.Audience,
             Issuer = _jwtConfiguration.Issuer,

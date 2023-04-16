@@ -22,5 +22,6 @@ public class InstagramContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new ParsingRequestConfiguration());
     }
 }

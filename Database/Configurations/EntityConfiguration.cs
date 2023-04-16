@@ -11,5 +11,6 @@ internal class EntityConfiguration<TEntity> : IEntityTypeConfiguration<TEntity> 
         builder.Property(v => v.Id).IsRequired();
         builder.Property(v => v.CreatedWhen).IsRequired();
         builder.Property(v => v.UpdatedWhen).HasDefaultValue(null);
+        builder.Property(v => v.IsDeleted).HasDefaultValue(false);
     }
 }

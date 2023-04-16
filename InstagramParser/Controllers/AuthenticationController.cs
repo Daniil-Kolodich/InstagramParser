@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Domain.AuthenticationDomain;
 using Domain.AuthenticationDomain.Models.Requests;
 using InstagramParser.Helpers;
@@ -22,7 +23,7 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpGet(nameof(Get))]
-    public async Task<IActionResult> Get([FromQuery] LoginUserRequest request)
+    public async Task<IActionResult> Get([FromQuery][Required] LoginUserRequest request)
     {
         var result = await _loginService.Login(request);
 
