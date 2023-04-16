@@ -1,6 +1,6 @@
 using Database.Context;
 
-namespace Database.UnitOfWork.Concrete;
+namespace Database.Repository.Concrete;
 
 public sealed class UnitOfWork : IUnitOfWork
 {
@@ -13,6 +13,10 @@ public sealed class UnitOfWork : IUnitOfWork
 
     public async Task<bool> SaveChanges()
     {
-        return await _context.SaveChangesAsync() > 0;
+        var result = await _context.SaveChangesAsync() > 0;
+
+        _context.ChangeTracker.Clear();
+
+        return result;
     }
 }

@@ -1,4 +1,4 @@
-namespace Database.UnitOfWork;
+namespace Database.Repository;
 
 public interface IUnitOfWork
 {

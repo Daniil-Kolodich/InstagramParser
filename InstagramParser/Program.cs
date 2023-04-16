@@ -1,21 +1,37 @@
-using Database.Context;
-using Database.Repository;
-using Database.Repository.Concrete;
-using Microsoft.EntityFrameworkCore;
+using System.Text;
+using Domain;
+using InstagramParser.Configurations;
+using InstagramParser.Helpers;
+using InstagramParser.Helpers.Concrete;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+DomainAssembly.ConfigureServices(builder.Services);
 
+// Api
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-// Database stuff
-
-builder.Services.AddDbContext<InstagramContext>(o => 
-    o.UseMySQL("server=localhost;database=instagram;user=instagram;password=1234"));
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.Configure<JwtConfiguration>(builder.Configuration.GetSection(nameof(JwtConfiguration)));
+builder.Services.AddTransient<IJwtHelper, JwtHelper>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(opt =>
+    {
+        var config = builder.Configuration.GetSection(nameof(JwtConfiguration)).Get<JwtConfiguration>();
+        opt.RequireHttpsMetadata = true;
+        opt.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = config.Issuer,
+            ValidateIssuer = true,
+            ValidAudience = config.Audience,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config.SecurityKey)),
+            ValidateLifetime = true
+        };
+    });
 
 var app = builder.Build();
 
@@ -28,6 +44,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
