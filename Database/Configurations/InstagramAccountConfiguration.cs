@@ -15,9 +15,9 @@ internal class InstagramAccountConfiguration : EntityConfiguration<InstagramAcco
         builder.Property(e => e.DeclinedReason).HasDefaultValue(null);
         builder.Property(e => e.InstagramAccountType).IsRequired();
 
-        builder.HasOne<ParsingRequest>(e => e.ParsingRequest)
+        builder.HasOne<Subscription>(e => e.Subscription)
             .WithMany(p => p.InstagramAccounts)
-            .HasForeignKey(e => e.ParsingRequestId)
+            .HasForeignKey(e => e.SubscriptionId)
             .IsRequired();
     }
 }

@@ -16,7 +16,7 @@ internal class UserConfiguration : EntityConfiguration<User>
         builder.Property(v => v.Email).IsRequired().HasMaxLength(50);
         builder.Property(v => v.Password).IsRequired().HasMaxLength(1000);
 
-        builder.HasMany<ParsingRequest>(u => u.ParsingRequests)
+        builder.HasMany<Subscription>(u => u.Subscriptions)
             .WithOne(p => p.User);
     }
 }

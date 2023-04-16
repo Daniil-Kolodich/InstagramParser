@@ -7,11 +7,11 @@ namespace InstagramParser.Controllers;
 [ApiController]
 [Authorize]
 [Route("[controller]")]
-public class ParsingRequestController : ControllerBase
+public class SubscriptionController : ControllerBase
 {
     private IIdentityHelper _identityHelper;
 
-    public ParsingRequestController(IIdentityHelper identityHelper)
+    public SubscriptionController(IIdentityHelper identityHelper)
     {
         _identityHelper = identityHelper;
     }

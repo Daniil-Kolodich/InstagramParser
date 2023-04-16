@@ -22,7 +22,7 @@ public class InstagramContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new UserConfiguration());
-        modelBuilder.ApplyConfiguration(new ParsingRequestConfiguration());
+        modelBuilder.ApplyConfiguration(new SubscriptionConfiguration());
         modelBuilder.ApplyConfiguration(new InstagramAccountConfiguration());
     }
 }

@@ -15,11 +15,4 @@
         <ProjectReference Include="..\Database\Database.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="ParsingRequestDomain\Concrete" />
-      <Folder Include="ParsingRequestDomain\Models\Requests" />
-      <Folder Include="ParsingRequestDomain\Models\Responses" />
-      <Folder Include="ParsingRequestDomain\Specifications" />
-    </ItemGroup>
-
 </Project>
