@@ -3,6 +3,7 @@ using Domain;
 using InstagramParser.Configurations;
 using InstagramParser.Helpers;
 using InstagramParser.Helpers.Concrete;
+using InstagramParser.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -34,6 +35,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 var app = builder.Build();
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

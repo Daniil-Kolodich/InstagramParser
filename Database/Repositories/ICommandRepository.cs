@@ -1,6 +1,6 @@
 using Database.Entities;
 
-namespace Database.Repository;
+namespace Database.Repositories;
 
 public interface ICommandRepository<TEntity> where TEntity : Entity
 {

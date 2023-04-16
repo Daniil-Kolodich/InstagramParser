@@ -3,7 +3,7 @@ using Database.Entities;
 using Database.Specification;
 using Microsoft.EntityFrameworkCore;
 
-namespace Database.Repository.Concrete;
+namespace Database.Repositories.Concrete;
 
 public sealed class QueryRepository<TEntity> : IQueryRepository<TEntity>
     where TEntity : Entity

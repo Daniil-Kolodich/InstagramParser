@@ -2,8 +2,7 @@ using Database.Context;
 using Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Database.Repository.Concrete;
-
+namespace Database.Repositories.Concrete;
 public sealed class CommandRepository<TEntity> : ICommandRepository<TEntity> where TEntity : Entity
 {
     private readonly DbSet<TEntity> _entities;

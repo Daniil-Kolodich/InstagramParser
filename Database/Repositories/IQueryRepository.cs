@@ -1,7 +1,7 @@
 using Database.Entities;
 using Database.Specification;
 
-namespace Database.Repository;
+namespace Database.Repositories;
 
 public interface IQueryRepository<TEntity> where TEntity : Entity
 {

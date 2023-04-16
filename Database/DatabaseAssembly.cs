@@ -1,6 +1,6 @@
 using Database.Context;
-using Database.Repository;
-using Database.Repository.Concrete;
+using Database.Repositories;
+using Database.Repositories.Concrete;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
