@@ -1,13 +1,14 @@
 using System.Security.Claims;
 using System.Text.Json;
+using Domain.SharedDomain;
 
 namespace InstagramParser.Helpers.Concrete;
 
-public class IdentityHelper : IIdentityHelper
+public class IdentityService : IIdentityService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public IdentityHelper(IHttpContextAccessor httpContextAccessor)
+    public IdentityService(IHttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;
     }

@@ -27,7 +27,7 @@ internal class RegistrationService : IRegistrationService
         {
             UserName = request.UserName,
             Email = request.Email,
-            Password = PasswordHasher.HashPassword(request.Password)
+            Password = PasswordHasher.HashPassword(request.Password),
         };
 
         var result = await _repository.AddAsync(user);

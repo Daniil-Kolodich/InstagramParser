@@ -11,16 +11,12 @@ public class Specification<TEntity> where TEntity : Entity
     private readonly Expression<Func<TEntity, bool>> _criteria = entity => true;
     private readonly List<Expression<Func<TEntity, Entity>>> _navigationIncludes = new();
 
-    public Specification()
-    {
-    }
-
     protected Specification(Expression<Func<TEntity, bool>> criteria)
     {
         _criteria = criteria;
     }
 
-    public IQueryable<TEntity> ApplySpecification(IQueryable<TEntity> query)
+    internal IQueryable<TEntity> ApplySpecification(IQueryable<TEntity> query)
     {
         if (_navigationIncludes.Any())
             query = _navigationIncludes.Aggregate(query, (current, include) => current.Include(include));

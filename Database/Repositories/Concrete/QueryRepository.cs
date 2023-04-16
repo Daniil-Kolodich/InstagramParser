@@ -18,11 +18,11 @@ public sealed class QueryRepository<TEntity> : IQueryRepository<TEntity>
 
     public Task<TEntity?> GetAsync(Specification<TEntity> spec)
     {
-        return _entities.AsNoTracking().ApplySpecification(spec).FirstOrDefaultAsync(spec);
+        return _entities.AsNoTracking().ApplySpecification(spec).Where(e => !e.IsDeleted).FirstOrDefaultAsync(spec);
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync(Specification<TEntity> spec)
     {
-        return await _entities.AsNoTracking().ApplySpecification(spec).Where(spec).ToListAsync();
+        return await _entities.AsNoTracking().ApplySpecification(spec).Where(e => !e.IsDeleted).Where(spec).ToListAsync();
     }
 }

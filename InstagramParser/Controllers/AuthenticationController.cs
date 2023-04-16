@@ -22,6 +22,7 @@ public class AuthenticationController : ControllerBase
         _jwtHelper = jwtHelper;
     }
 
+    //TODO: use attribute like [ProducesResponseType] etc
     [HttpGet(nameof(Get))]
     public async Task<IActionResult> Get([FromQuery][Required] LoginUserRequest request)
     {

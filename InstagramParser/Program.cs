@@ -1,5 +1,6 @@
 using System.Text;
 using Domain;
+using Domain.SharedDomain;
 using InstagramParser.Configurations;
 using InstagramParser.Helpers;
 using InstagramParser.Helpers.Concrete;
@@ -47,7 +48,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.Configure<JwtConfiguration>(builder.Configuration.GetSection(nameof(JwtConfiguration)));
 builder.Services.AddTransient<IJwtHelper, JwtHelper>();
-builder.Services.AddScoped<IIdentityHelper, IdentityHelper>();
+builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(opt =>
     {
