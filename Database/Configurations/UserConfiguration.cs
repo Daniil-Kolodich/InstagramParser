@@ -7,7 +7,7 @@ namespace Database.Configurations;
 
 internal class UserConfiguration : EntityConfiguration<User>
 {
-    public new void Configure(EntityTypeBuilder<User> builder)
+    public override void Configure(EntityTypeBuilder<User> builder)
     {
         base.Configure(builder);
 

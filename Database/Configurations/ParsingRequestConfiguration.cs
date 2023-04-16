@@ -6,7 +6,7 @@ namespace Database.Configurations;
 
 internal class ParsingRequestConfiguration : EntityConfiguration<ParsingRequest>
 {
-    public new void Configure(EntityTypeBuilder<ParsingRequest> builder)
+    public override void Configure(EntityTypeBuilder<ParsingRequest> builder)
     {
         base.Configure(builder);
 
@@ -20,6 +20,9 @@ internal class ParsingRequestConfiguration : EntityConfiguration<ParsingRequest>
         builder.HasOne<User>(e => e.User)
             .WithMany(u => u.ParsingRequests)
             .HasForeignKey(p => p.UserId)
+            .IsRequired();
+        builder.HasMany<InstagramAccount>(e => e.InstagramAccounts)
+            .WithOne(a => a.ParsingRequest)
             .IsRequired();
     }
 }

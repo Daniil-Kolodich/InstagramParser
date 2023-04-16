@@ -12,6 +12,7 @@ public class ParsingRequest : Entity
     public ParsingStatus ParsingStatus { get; set; }
     public ParsingType ParsingType { get; set; }
     
+    public IEnumerable<InstagramAccount> InstagramAccounts { get; set; }
     public int UserId { get; set; }
     public User User { get; set; }
 
