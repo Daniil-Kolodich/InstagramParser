@@ -49,7 +49,7 @@ internal class SubscriptionService : ISubscriptionService
         var sourceAccounts = await _instagramAccountService.CreateInstagramAccountsFrom(request.Source, subscription);
         var targetAccounts = await _instagramAccountService.CreateInstagramAccountsTo(request.Target, subscription);
 
-        subscription.InstagramAccounts = sourceAccounts.Concat(targetAccounts);
+        subscription.InstagramAccounts = sourceAccounts.Concat(targetAccounts).ToList();
 
         var entity = await _commandRepository.AddAsync(subscription);
 
