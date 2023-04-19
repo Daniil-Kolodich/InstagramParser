@@ -1,4 +1,4 @@
-namespace Database.Constants;
+namespace Domain.InstagramAccountDomain.Constants;
 
 public enum InstagramAccountType
 {

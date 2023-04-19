@@ -1,14 +1,14 @@
-using Database.Constants;
-
 namespace Database.Entities;
 
 public class Subscription : Entity
 {
     // perform search of which people coming from this source
+    // SubscriptionSource
     public int Source { get; set; }
     // are subscribed to this source
     public int Target { get; set; }
 
+    
     public int Status { get; set; }
     public int Type { get; set; }
     

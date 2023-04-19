@@ -23,21 +23,9 @@ public class SubscriptionController : ControllerBase
         return Ok(await _subscriptionService.GetById(id));
     }
     
-    [HttpPost(nameof(FollowCheckByAccountsFollowers))]
-    public async Task<IActionResult> FollowCheckByAccountsFollowers([FromQuery] ByAccountsFollowersRequest request)
+    [HttpPost(nameof(FollowCheck))]
+    public async Task<IActionResult> FollowCheck([FromBody] FollowCheckRequest request)
     {
-        return Ok(await _subscriptionService.FollowCheckByAccountsFollowers(request));
-    }
-    
-    [HttpPost(nameof(FollowCheckByAccountsFollowings))]
-    public async Task<IActionResult> FollowCheckByAccountsFollowings([FromQuery] ByAccountsFollowingsRequest request)
-    {
-        return Ok(await _subscriptionService.FollowCheckByAccountsFollowings(request));
-    }
-    
-    [HttpPost(nameof(FollowCheckByAccounts))]
-    public async Task<IActionResult> FollowCheckByAccounts([FromQuery] ByAccountsRequest request)
-    {
-        return Ok(await _subscriptionService.FollowCheckByAccounts(request));
+        return Ok(await _subscriptionService.FollowCheck(request));
     }
 }

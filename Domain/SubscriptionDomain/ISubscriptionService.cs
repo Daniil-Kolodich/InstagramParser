@@ -6,7 +6,5 @@ namespace Domain.SubscriptionDomain;
 public interface ISubscriptionService
 {
     Task<GetSubscriptionResponse> GetById(int requestId);
-    Task<GetSubscriptionResponse> FollowCheckByAccountsFollowings(ByAccountsFollowingsRequest request);
-    Task<GetSubscriptionResponse> FollowCheckByAccountsFollowers(ByAccountsFollowersRequest request);
-    Task<GetSubscriptionResponse> FollowCheckByAccounts(ByAccountsRequest request);
+    Task<GetSubscriptionResponse> FollowCheck(FollowCheckRequest request);
 }

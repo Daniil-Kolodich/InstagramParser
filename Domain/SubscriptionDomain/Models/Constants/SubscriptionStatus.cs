@@ -1,4 +1,4 @@
-namespace Domain.SubscriptionDomain.Constants;
+namespace Domain.SubscriptionDomain.Models.Constants;
 
 public enum SubscriptionStatus
 {

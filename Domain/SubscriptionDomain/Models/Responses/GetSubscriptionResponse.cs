@@ -1,4 +1,4 @@
-using Domain.SubscriptionDomain.Constants;
+using Domain.SubscriptionDomain.Models.Constants;
 
 namespace Domain.SubscriptionDomain.Models.Responses;
 
