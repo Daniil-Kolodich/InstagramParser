@@ -6,7 +6,12 @@ public class InstagramAccount : Entity
     //InstagramAccountType
     public int InstagramAccountType { get; set; }
     // subscription type
+    public bool IsProcessed { get; set; }
     public int? DeclinedReason { get; set; }
+    
+    public int? ParentId { get; set; }
+    public InstagramAccount? Parent { get; set; }
+    public IEnumerable<InstagramAccount> Children { get; set; }
     
     public int SubscriptionId { get; set; }
     public Subscription Subscription { get; set; }
