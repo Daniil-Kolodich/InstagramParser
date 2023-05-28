@@ -7,6 +7,6 @@ public static class InstagramAssembly
 {
     public static void ConfigureServices(IServiceCollection services)
     {
-        services.AddScoped<IInstagramManager, InstagramManager>();
+        services.AddScoped<IInstagramManager, FakeInstagramManager>();
     }
 }

@@ -19,8 +19,6 @@ public static class DomainAssembly
     {
         var assembly = typeof(DomainAssembly).Assembly;
 
-        services.AddAutoMapper(assembly);
-        
         // Authentication
         services.AddScoped<ILoginService, LoginService>();
         services.AddScoped<IRegistrationService, RegistrationService>();

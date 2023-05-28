@@ -1,26 +1,14 @@
 namespace Instagram.Concrete;
 
-internal class InstagramManager : IInstagramManager
+public class InstagramManager : IInstagramManager
 {
-    public IEnumerable<string> GetFollowers(string id)
+    public Task<IEnumerable<string[]>> GetFollowers(string instagramId, CancellationToken cancellationToken)
     {
-        var rnd = new Random();
-        var count = rnd.Next(0, 5);
-        
-        for (int i = 0; i < count; i++)
-        {
-            yield return $"{id}_follower : {i}";
-        }
+        throw new NotImplementedException();
     }
 
-    public IEnumerable<string> GetFollowings(string id)
+    public Task<IEnumerable<string[]>> GetFollowings(string instagramId, CancellationToken cancellationToken)
     {
-        var rnd = new Random();
-        var count = rnd.Next(1, 2);
-        
-        for (int i = 0; i < count; i++)
-        {
-            yield return $"{id}_following : {i}";
-        }
+        throw new NotImplementedException();
     }
 }

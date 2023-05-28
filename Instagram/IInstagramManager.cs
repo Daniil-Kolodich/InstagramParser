@@ -2,6 +2,6 @@ namespace Instagram;
 
 public interface IInstagramManager
 {
-    IEnumerable<string> GetFollowers(string id);
-    IEnumerable<string> GetFollowings(string id);
+    Task<IEnumerable<string[]>> GetFollowers(string instagramId, CancellationToken cancellationToken);
+    Task<IEnumerable<string[]>> GetFollowings(string instagramId, CancellationToken cancellationToken);
 }

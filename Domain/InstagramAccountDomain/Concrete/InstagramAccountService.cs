@@ -31,6 +31,7 @@ internal class InstagramAccountService : IInstagramAccountService
     private async Task AddChildren(InstagramAccount parent, InstagramAccountType accountType, string[] accounts,
         Subscription subscription)
     {
+        // will this mean that old ones are deleted ?
         parent.Children = await CreateInstagramAccounts(accounts, accountType, subscription);
         parent.IsProcessed = true;
         
@@ -47,17 +48,9 @@ internal class InstagramAccountService : IInstagramAccountService
             {
                 InstagramId = accountId,
                 InstagramAccountType = (int)accountType,
+                SubscriptionId = subscription.Id
             };
 
-            if (subscription.Id == default)
-            {
-                account.Subscription = subscription;
-            }
-            else
-            {
-                account.SubscriptionId = subscription.Id;
-            }
-            
             result.Add(await _commandRepository.AddAsync(account));
         }
 

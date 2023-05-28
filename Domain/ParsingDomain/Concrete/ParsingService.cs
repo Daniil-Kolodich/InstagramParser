@@ -28,13 +28,14 @@ internal class ParsingService : IParsingService
     public ParsingService(IQueryRepository<Subscription> querySubscriptionRepository,
         IInstagramAccountService instagramAccountService,
         IUnitOfWork unitOfWork,
-        IInstagramManager instagramManager, ICommandRepository<Subscription> commandSubscriptionRepository)
+        ICommandRepository<Subscription> commandSubscriptionRepository,
+        IInstagramManager instagramManager)
     {
         _querySubscriptionRepository = querySubscriptionRepository;
         _instagramAccountService = instagramAccountService;
         _unitOfWork = unitOfWork;
-        _instagramManager = instagramManager;
         _commandSubscriptionRepository = commandSubscriptionRepository;
+        _instagramManager = instagramManager;
     }
 
     public async Task<int?> GetSubscriptionForParsing() =>
@@ -50,8 +51,9 @@ internal class ParsingService : IParsingService
             return;
         }
 
-        if (IsReadyForParsing(subscription))
+        if (subscription.Status == (int)SubscriptionStatus.ReadyForProcessing)
         {
+            // actual processing
             // parse ?:
             return;
         }
@@ -61,10 +63,6 @@ internal class ParsingService : IParsingService
 
     internal async Task Process(Subscription subscription)
     {
-        subscription.Status = (int)SubscriptionStatus.Active;
-        _commandSubscriptionRepository.UpdateAsync(subscription);
-        await _unitOfWork.SaveChanges();
-        
         (InstagramAccount Value, SubscriptionSource Source)[] accounts;
         
         {
@@ -82,42 +80,33 @@ internal class ParsingService : IParsingService
         // TODO: Performance check later
         foreach (var (account, source) in accounts)
         {
+            // can be done more async i think
             if (source == SubscriptionSource.AccountsFollowers)
             {
-                var followers = _instagramManager.GetFollowers(account.InstagramId).ToArray();
+                var followers = await FetchChildren(account.InstagramId, CancellationToken.None, _instagramManager.GetFollowers);
+
                 await _instagramAccountService.AddFollowers(account, followers, subscription);
             }
 
             if (source == SubscriptionSource.AccountsFollowings)
             {
-                var followings = _instagramManager.GetFollowings(account.InstagramId).ToArray();
+                var followings = await FetchChildren(account.InstagramId, CancellationToken.None, _instagramManager.GetFollowings);
+
                 await _instagramAccountService.AddFollowings(account, followings, subscription);
             }
 
             await _unitOfWork.SaveChanges();
         }
         
-        subscription.Status = (int)SubscriptionStatus.Pending;
+        subscription.Status = (int)SubscriptionStatus.ReadyForProcessing;
         _commandSubscriptionRepository.UpdateAsync(subscription);
         await _unitOfWork.SaveChanges();
     }
-    
-    internal static bool IsReadyForParsing(Subscription subscription) =>
-        IsSourceProcessed(subscription) && IsTargetProcessed(subscription);
 
-    internal static bool IsSourceProcessed(Subscription subscription)
+    internal async Task<string[]> FetchChildren(string instagramId, CancellationToken cancellationToken,
+        Func<string, CancellationToken, Task<IEnumerable<string[]>>> fetchAction)
     {
-        if (subscription.Source == (int)SubscriptionSource.AccountsList)
-            return true;
-
-        return !subscription.InstagramAccounts.Where(SourceOriginAccount).Any();
-    }
-
-    internal static bool IsTargetProcessed(Subscription subscription)
-    {
-        if (subscription.Target == (int)SubscriptionSource.AccountsList)
-            return true;
-
-        return !subscription.InstagramAccounts.Where(TargetOriginAccount).Any();
+        var childrenBatches = await fetchAction(instagramId, cancellationToken);
+        return childrenBatches.SelectMany(x => x).ToArray();
     }
 }
