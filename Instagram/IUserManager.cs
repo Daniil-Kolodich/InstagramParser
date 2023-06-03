@@ -2,7 +2,7 @@ using Instagram.Concrete;
 
 namespace Instagram;
 
-public interface IInstagramManager
+public interface IUserManager
 {
     /// <param name="id"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>

@@ -16,10 +16,7 @@ public interface IFollowManager
     /// <returns>Successful Response</returns>
     /// <exception cref="ApiException">A server side error occurred.</exception>
     Task<ICollection<UserShort>> Search(string userId, string query,
-        CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+        CancellationToken cancellationToken);
 
     /// <param name="amount"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -33,10 +30,7 @@ public interface IFollowManager
     /// <returns>Successful Response</returns>
     /// <exception cref="ApiException">A server side error occurred.</exception>
     Task<ICollection<UserShort>> Get(string userId, int? amount,
-        CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+        CancellationToken cancellationToken);
 
     /// <param name="maxId"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -51,8 +45,5 @@ public interface IFollowManager
     /// <returns>List of users (children)</returns>
     /// <exception cref="ApiException">A server side error occurred.</exception>
     Task<Tuple<ICollection<UserShort>, string>> GetChunk(string userId, int? amount,
-        string maxId, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+        string maxId, CancellationToken cancellationToken);
 }

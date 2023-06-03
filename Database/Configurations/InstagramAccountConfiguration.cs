@@ -12,6 +12,7 @@ internal class InstagramAccountConfiguration : EntityConfiguration<InstagramAcco
 
         builder.ToTable("InstagramAccounts").HasKey(e => e.Id);
         builder.Property(e => e.InstagramId).IsRequired();
+        builder.Property(e => e.UserName).IsRequired();
         builder.Property(e => e.IsProcessed).HasDefaultValue(false);
         builder.Property(e => e.DeclinedReason).HasDefaultValue(null);
         builder.Property(e => e.InstagramAccountType).IsRequired();

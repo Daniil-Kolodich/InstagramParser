@@ -3,11 +3,19 @@ namespace Database.Entities;
 public class InstagramAccount : Entity
 {
     public string InstagramId { get; set; }
+    public string UserName { get; set; }
+    // TODO: decide do i need instagram username here as well ?
+    
     //InstagramAccountType
     public int InstagramAccountType { get; set; }
-    // subscription type
     public bool IsProcessed { get; set; }
+
+    // subscription type
     public int? DeclinedReason { get; set; }
+    
+    public int FollowersCount { get; set; }
+    public int FollowingsCount { get; set; }
+    
     
     public int? ParentId { get; set; }
     public InstagramAccount? Parent { get; set; }

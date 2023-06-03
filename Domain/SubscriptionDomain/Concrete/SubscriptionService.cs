@@ -56,7 +56,7 @@ internal class SubscriptionService : ISubscriptionService
         {
             Source = (int)request.SubscriptionSource,
             Target = (int)request.SubscriptionTarget,
-            Status = (int)GetSubscriptionStatus(request.SubscriptionSource, request.SubscriptionTarget),
+            Status = (int)SubscriptionStatus.Pending,
             Type = (int)SubscriptionType.Follow,
             UserId = _identityService.UserId
         };
@@ -81,9 +81,4 @@ internal class SubscriptionService : ISubscriptionService
             (SubscriptionType) entity.Type,
             entity.InstagramAccounts.Select(a => a.InstagramId).ToArray());
     }
-
-    internal static SubscriptionStatus GetSubscriptionStatus(SubscriptionSource source, SubscriptionSource target) =>
-        source == SubscriptionSource.AccountsList && target == SubscriptionSource.AccountsList
-            ? SubscriptionStatus.ReadyForProcessing
-            : SubscriptionStatus.Pending;
 }

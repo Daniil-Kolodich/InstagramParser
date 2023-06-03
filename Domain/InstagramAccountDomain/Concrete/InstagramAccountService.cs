@@ -47,6 +47,7 @@ internal class InstagramAccountService : IInstagramAccountService
             var account = new InstagramAccount()
             {
                 InstagramId = accountId,
+                UserName = String.Empty,
                 InstagramAccountType = (int)accountType,
                 SubscriptionId = subscription.Id
             };

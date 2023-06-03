@@ -17,10 +17,10 @@ internal class LamavadaClient : ILamavadaClient
 	private readonly HttpClient _httpClient;
 	private readonly Lazy<JsonSerializerSettings> _settings;
 
-	public LamavadaClient(HttpClient httpClient)
+	public LamavadaClient(IHttpClientFactory httpClientFactory)
 	{
 		BaseUrl = "";
-		_httpClient = httpClient;
+		_httpClient = httpClientFactory.CreateClient();
 		_settings = new Lazy<JsonSerializerSettings>(CreateSerializerSettings);
 	}
 
@@ -137,7 +137,7 @@ internal class LamavadaClient : ILamavadaClient
 	}
 
 
-	async Task<User> IInstagramManager.GetUserById(string id, CancellationToken cancellationToken)
+	public async Task<User> GetUserById(string id, CancellationToken cancellationToken)
 	{
 		if (id == null)
 			throw new ArgumentNullException(nameof(id));
@@ -219,7 +219,7 @@ internal class LamavadaClient : ILamavadaClient
 				client.Dispose();
 		}
 	}
-	async Task<User> IInstagramManager.GetUserByUsername(string username, CancellationToken cancellationToken)
+	public async Task<User> GetUserByUsername(string username, CancellationToken cancellationToken)
 	{
 		if (username == null)
 			throw new ArgumentNullException(nameof(username));
@@ -302,8 +302,7 @@ internal class LamavadaClient : ILamavadaClient
 		}
 	}
 
-    
-    async Task<ICollection<UserShort>> IFollowersManager.Search(string userId, string query, CancellationToken cancellationToken)
+    public async Task<ICollection<UserShort>> SearchFollowers(string userId, string query, CancellationToken cancellationToken)
 	{
 		if (userId == null)
 			throw new ArgumentNullException(nameof(userId));
@@ -389,7 +388,8 @@ internal class LamavadaClient : ILamavadaClient
 				client.Dispose();
 		}
 	}
-	async Task<ICollection<UserShort>> IFollowersManager.Get(string userId, int? amount, CancellationToken cancellationToken)
+
+    public async Task<ICollection<UserShort>> GetFollowers(string userId, int? amount, CancellationToken cancellationToken)
 	{
 		if (userId == null)
 			throw new ArgumentNullException(nameof(userId));
@@ -475,7 +475,7 @@ internal class LamavadaClient : ILamavadaClient
 				client.Dispose();
 		}
 	}
-    async Task<Tuple<ICollection<UserShort>, string>> IFollowersManager.GetChunk(string userId, int? amount, string maxId, CancellationToken cancellationToken)
+    public async Task<Tuple<ICollection<UserShort>, string>> GetFollowersChunk(string userId, int? amount, string maxId, CancellationToken cancellationToken)
 	{
 		if (userId == null)
 			throw new ArgumentNullException(nameof(userId));
@@ -567,7 +567,7 @@ internal class LamavadaClient : ILamavadaClient
 	}
 
     
-    async Task<ICollection<UserShort>> IFollowingsManager.Search(string userId, string query, CancellationToken cancellationToken)
+    public async Task<ICollection<UserShort>> SearchFollowings(string userId, string query, CancellationToken cancellationToken)
 	{
 		if (userId == null)
 			throw new ArgumentNullException(nameof(userId));
@@ -653,7 +653,7 @@ internal class LamavadaClient : ILamavadaClient
 				client.Dispose();
 		}
 	}
-    async Task<ICollection<UserShort>> IFollowingsManager.Get(string userId, int? amount, CancellationToken cancellationToken)
+    public async Task<ICollection<UserShort>> GetFollowings(string userId, int? amount, CancellationToken cancellationToken)
 	{
 		if (userId == null)
 			throw new ArgumentNullException(nameof(userId));
@@ -739,7 +739,7 @@ internal class LamavadaClient : ILamavadaClient
 				client.Dispose();
 		}
 	}
-    async Task<Tuple<ICollection<UserShort>, string>> IFollowingsManager.GetChunk(string userId, int? amount, string maxId, CancellationToken cancellationToken)
+    public async Task<Tuple<ICollection<UserShort>, string>> GetFollowingsChunk(string userId, int? amount, string maxId, CancellationToken cancellationToken)
 	{
 		if (userId == null)
 			throw new ArgumentNullException(nameof(userId));
