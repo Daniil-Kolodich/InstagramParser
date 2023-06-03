@@ -11,7 +11,7 @@ namespace Database.Repositories.Concrete
             _context = context;
         }
 
-        public async Task<bool> SaveChanges()
+        public async Task<bool> SaveChangesAsync()
         {
             var result = await _context.SaveChangesAsync() > 0;
 

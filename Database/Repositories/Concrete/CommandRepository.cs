@@ -19,12 +19,17 @@ public sealed class CommandRepository<TEntity> : ICommandRepository<TEntity> whe
         return (await _entities.AddAsync(entity)).Entity;
     }
 
-    public void UpdateAsync(TEntity entity)
+    public void Update(TEntity entity)
     {
         _entities.Update(entity);
     }
 
-    public void DeleteAsync(TEntity entity)
+    public void UpdateRange(IEnumerable<TEntity> entities)
+    {
+        _entities.UpdateRange(entities);
+    }
+
+    public void Delete(TEntity entity)
     {
         entity.IsDeleted = true;
     }

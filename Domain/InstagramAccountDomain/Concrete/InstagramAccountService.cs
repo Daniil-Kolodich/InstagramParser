@@ -14,11 +14,11 @@ internal class InstagramAccountService : IInstagramAccountService
     }
 
     public Task<IEnumerable<InstagramAccount>>
-        CreateInstagramAccountsFrom(string[] accounts, Subscription subscription) =>
+        CreateSourceAccounts(string[] accounts, Subscription subscription) =>
         CreateInstagramAccounts(accounts, InstagramAccountType.From, subscription);
 
     public Task<IEnumerable<InstagramAccount>>
-        CreateInstagramAccountsTo(string[] accounts, Subscription subscription) =>
+        CreateTargetAccounts(string[] accounts, Subscription subscription) =>
         CreateInstagramAccounts(accounts, InstagramAccountType.To, subscription);
 
     public Task AddFollowers(InstagramAccount parent, string[] accounts, Subscription subscription) =>         
@@ -26,7 +26,30 @@ internal class InstagramAccountService : IInstagramAccountService
 
     public Task AddFollowings(InstagramAccount parent, string[] accounts, Subscription subscription) =>
         AddChildren(parent, InstagramAccountType.To, accounts, subscription);
-    
+
+    public void Decline(InstagramAccount account, Subscription subscription)
+    {
+        account.DeclinedReason = subscription.Type;
+        
+        _commandRepository.Update(account);
+    }
+
+    public void DeclineAll(IEnumerable<InstagramAccount> accounts, Subscription subscription)
+    {
+        var instagramAccounts = accounts as InstagramAccount[] ?? accounts.ToArray();
+        
+        if (!instagramAccounts.Any())
+        {
+            return;
+        }
+        
+        foreach (var account in instagramAccounts)
+        {
+            account.DeclinedReason = subscription.Type;
+        }
+        
+        _commandRepository.UpdateRange(instagramAccounts);
+    }
 
     private async Task AddChildren(InstagramAccount parent, InstagramAccountType accountType, string[] accounts,
         Subscription subscription)
@@ -35,7 +58,7 @@ internal class InstagramAccountService : IInstagramAccountService
         parent.Children = await CreateInstagramAccounts(accounts, accountType, subscription);
         parent.IsProcessed = true;
         
-        _commandRepository.UpdateAsync(parent);
+        _commandRepository.Update(parent);
     }
 
     private async Task<IEnumerable<InstagramAccount>> CreateInstagramAccounts(string[] accounts, InstagramAccountType accountType, Subscription subscription)

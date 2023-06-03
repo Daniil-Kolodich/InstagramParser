@@ -18,10 +18,10 @@ internal abstract class FollowManager : IFollowManager
     public Task<ICollection<UserShort>> Search(string userId, string query, CancellationToken cancellationToken) =>
         _searchDelegate(userId, query, cancellationToken);
 
-    public Task<ICollection<UserShort>> Get(string userId, int? amount, CancellationToken cancellationToken) =>
-        _getDelegate(userId, amount, cancellationToken);
-
-    public Task<Tuple<ICollection<UserShort>, string>> GetChunk(string userId, int? amount, string maxId,
-        CancellationToken cancellationToken) =>
-        _getChunkDelegate(userId, amount, maxId, cancellationToken);
+    public async Task<IEnumerable<ICollection<UserShort>>> Get(string userId, int? amount,
+        CancellationToken cancellationToken)
+    {
+        var firstBatch = await _getDelegate(userId, amount, cancellationToken);
+        return new[] { firstBatch };
+    }
 }

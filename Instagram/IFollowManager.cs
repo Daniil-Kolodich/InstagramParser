@@ -29,21 +29,6 @@ public interface IFollowManager
     /// </remarks>
     /// <returns>Successful Response</returns>
     /// <exception cref="ApiException">A server side error occurred.</exception>
-    Task<ICollection<UserShort>> Get(string userId, int? amount,
+    Task<IEnumerable<ICollection<UserShort>>> Get(string userId, int? amount,
         CancellationToken cancellationToken);
-
-    /// <param name="maxId"></param>
-    /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-    /// <param name="userId"></param>
-    /// <param name="amount"></param>
-    /// <summary>
-    /// Get a user children (one request required)
-    /// </summary>
-    /// <remarks>
-    /// Get part (one page) of child users with cursor
-    /// </remarks>
-    /// <returns>List of users (children)</returns>
-    /// <exception cref="ApiException">A server side error occurred.</exception>
-    Task<Tuple<ICollection<UserShort>, string>> GetChunk(string userId, int? amount,
-        string maxId, CancellationToken cancellationToken);
 }

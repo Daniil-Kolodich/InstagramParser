@@ -32,7 +32,7 @@ internal class RegistrationService : IRegistrationService
 
         var result = await _repository.AddAsync(user);
 
-        if (!await _unitOfWork.SaveChanges()) throw RegistrationError;
+        if (!await _unitOfWork.SaveChangesAsync()) throw RegistrationError;
 
         return new RegisterUserResponse(result.Id);
     }

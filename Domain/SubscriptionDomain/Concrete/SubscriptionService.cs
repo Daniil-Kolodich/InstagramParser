@@ -61,14 +61,14 @@ internal class SubscriptionService : ISubscriptionService
             UserId = _identityService.UserId
         };
 
-        var sourceAccounts = await _instagramAccountService.CreateInstagramAccountsFrom(request.Source, subscription);
-        var targetAccounts = await _instagramAccountService.CreateInstagramAccountsTo(request.Target, subscription);
+        var sourceAccounts = await _instagramAccountService.CreateSourceAccounts(request.Source, subscription);
+        var targetAccounts = await _instagramAccountService.CreateTargetAccounts(request.Target, subscription);
 
         subscription.InstagramAccounts = sourceAccounts.Concat(targetAccounts).ToList();
 
         var entity = await _commandRepository.AddAsync(subscription);
 
-        if (!await _unitOfWork.SaveChanges())
+        if (!await _unitOfWork.SaveChangesAsync())
         {
             throw SubscriptionSaveError;
         }
