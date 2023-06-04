@@ -4,13 +4,10 @@ public class InstagramAccount : Entity
 {
     public string InstagramId { get; set; }
     public string UserName { get; set; }
-    // TODO: decide do i need instagram username here as well ?
-    
-    //InstagramAccountType
     public int InstagramAccountType { get; set; }
     public bool IsProcessed { get; set; }
 
-    // subscription type
+
     public int? DeclinedReason { get; set; }
     
     public int FollowersCount { get; set; }

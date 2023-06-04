@@ -69,7 +69,6 @@ internal class ParsingService : IParsingService
 
         var (followManager, sources, targets) = PrepareForParsing(subscription);
 
-        // TODO: need to write down how exactly flow is going
         //  !!! source list should be subscribed to target list !!!
         foreach (var target in targets)
         {
