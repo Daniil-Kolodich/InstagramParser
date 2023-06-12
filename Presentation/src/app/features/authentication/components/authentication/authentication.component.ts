@@ -1,8 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { DestroyableComponent } from '../../../../shared/components/destroyable.component';
-import { AuthenticationService } from '../../../../shared/services/authentication.service';
+import { AuthenticationResponse, AuthenticationService } from '../../../../shared/services/authentication.service';
 import { Router } from '@angular/router';
 import { filter, takeUntil } from 'rxjs';
+import { nonNull } from '../../../../shared/shared.module';
 
 @Component({
 	selector: 'app-authentication',
@@ -15,11 +16,13 @@ export class AuthenticationComponent extends DestroyableComponent implements OnI
 
 	public ngOnInit(): void {
 		this.authenticationService
-			.authorized$()
-			.pipe(
-				filter((value) => value),
-				takeUntil(this.destroy$)
-			)
-			.subscribe(() => this.router.navigate(['']));
+			.authenticationResults$()
+			.Value.pipe(filter(nonNull), takeUntil(this.destroy$))
+			.subscribe(this.onAuthentication);
+	}
+
+	private onAuthentication(value: AuthenticationResponse) {
+		this.authenticationService.setToken(value);
+		this.router.navigate(['']);
 	}
 }
