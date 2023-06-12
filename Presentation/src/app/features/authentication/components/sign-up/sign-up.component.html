@@ -1,1 +1,39 @@
-<p>sign-up works!</p>
+<mat-card *ngIf="form">
+	<form [formGroup]="form" (submit)="onSubmit()">
+		<mat-card-header>
+			<mat-card-title>Sign Up</mat-card-title>
+		</mat-card-header>
+
+		<mat-card-content>
+			<mat-form-field appearance="fill" hideRequiredMarker class="w-100">
+				<mat-label>UserName</mat-label>
+				<input matInput [formControl]="form.controls.UserName" required>
+				<mat-error>Error</mat-error>
+			</mat-form-field>
+
+			<mat-form-field appearance="fill" hideRequiredMarker class="w-100">
+				<mat-label>Email</mat-label>
+				<input matInput [formControl]="form.controls.Email" required email>
+				<mat-error>Error</mat-error>
+			</mat-form-field>
+
+			<mat-form-field appearance="fill" hideRequiredMarker class="w-100">
+				<mat-label>Password</mat-label>
+				<input matInput [formControl]="form.controls.Password" required>
+				<mat-error>Error</mat-error>
+			</mat-form-field>
+
+			<mat-divider></mat-divider>
+		</mat-card-content>
+
+		<mat-card-actions align="end">
+			<a class="text-center" mat-button routerLink="../login">Already have an account?</a>
+			<button [disabled]="form.invalid" mat-flat-button color="primary" type="submit" class="w-50">Sign Up</button>
+		</mat-card-actions>
+
+		<div></div>
+		<mat-card-footer>
+			<mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+		</mat-card-footer>
+	</form>
+</mat-card>

@@ -2,8 +2,6 @@ import { Component, inject, OnInit } from '@angular/core';
 import { AuthenticationService, LoginUserRequest } from '../../../../shared/services/authentication.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ControlsOf } from '../../../../shared/shared.module';
-import { filter, takeUntil } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { DestroyableComponent } from '../../../../shared/components/destroyable.component';
 import { Router } from '@angular/router';
 
@@ -21,15 +19,6 @@ export class LogInComponent extends DestroyableComponent implements OnInit {
 	public loading = false;
 
 	public ngOnInit(): void {
-		this.authenticationService
-			.authorized$()
-			.pipe(
-				tap(() => (this.loading = false)),
-				filter((value) => value),
-				takeUntil(this.destroy$)
-			)
-			.subscribe(() => this.router.navigate(['']));
-
 		this.form = this.formBuilder.nonNullable.group({
 			Email: '',
 			Password: '',

@@ -5,6 +5,8 @@ import { HttpClient } from '@angular/common/http';
 @Injectable({
 	providedIn: 'root',
 })
+
+// TODO i might need to use Subjects with like { Value<T>, Error, Loading } type to get full control
 export class AuthenticationService {
 	private readonly httpClient = inject(HttpClient);
 	private readonly _authorized$ = new BehaviorSubject<boolean>(false);
@@ -15,6 +17,13 @@ export class AuthenticationService {
 	}
 
 	public login(request: LoginUserRequest): void {
+		this.httpClient.get('').subscribe(
+			(result) => this._authorized$.next(true),
+			(error) => this._authorized$.next(false)
+		);
+	}
+
+	public register(request: RegisterUserRequest): void {
 		this.httpClient.get('').subscribe(
 			(result) => this._authorized$.next(true),
 			(error) => this._authorized$.next(false)
