@@ -5,9 +5,10 @@ import { AppComponent } from './app.component';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { AuthenticationModule, authenticationRoutes } from './features/authentication/authentication.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthenticationComponent } from './features/authentication/components/authentication/authentication.component';
+import { ApiInterceptor } from './shared/interceptors/api.interceptor';
 
 @NgModule({
 	bootstrap: [AppComponent],
@@ -21,6 +22,12 @@ import { AuthenticationComponent } from './features/authentication/components/au
 		NgbModule,
 		HttpClientModule,
 	],
-	providers: [],
+	providers: [
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: ApiInterceptor,
+			multi: true,
+		},
+	],
 })
 export class AppModule {}
