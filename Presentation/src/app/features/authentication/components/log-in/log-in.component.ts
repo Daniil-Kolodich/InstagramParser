@@ -1,9 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { AuthenticationService, LoginUserRequest } from '../../../../shared/services/authentication.service';
+import {
+	AuthenticationResponse,
+	AuthenticationService,
+	LoginUserRequest,
+} from '../../../../shared/services/authentication.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ControlsOf } from '../../../../shared/shared.module';
+import { ControlsOf, ObservableResults } from '../../../../shared/shared.module';
 import { DestroyableComponent } from '../../../../shared/components/destroyable.component';
-import { Router } from '@angular/router';
+import { delay, tap } from 'rxjs';
+import { NotificationService } from '../../../../shared/services/notification.service';
 
 @Component({
 	selector: 'app-log-in',
@@ -12,17 +17,22 @@ import { Router } from '@angular/router';
 })
 export class LogInComponent extends DestroyableComponent implements OnInit {
 	private readonly authenticationService = inject(AuthenticationService);
+	private readonly notificationService = inject(NotificationService);
 	private readonly formBuilder: FormBuilder = inject(FormBuilder);
-	private readonly router: Router = inject(Router);
 
 	public form: FormGroup<ControlsOf<LoginUserRequest>> | undefined;
-	public loading = false;
-
+	public result$: ObservableResults<AuthenticationResponse> | undefined;
 	public ngOnInit(): void {
 		this.form = this.formBuilder.nonNullable.group({
 			Email: '',
 			Password: '',
 		});
+
+		this.result$ = this.authenticationService.authenticationResults$();
+
+		this.result$.Error = this.result$.Error.pipe(
+			tap(() => this.notificationService.error('Invalid Email or Password'))
+		);
 	}
 
 	public onSubmit(): void {
@@ -30,7 +40,6 @@ export class LogInComponent extends DestroyableComponent implements OnInit {
 			return;
 		}
 
-		this.loading = true;
 		this.authenticationService.login(this.form.getRawValue());
 	}
 }
