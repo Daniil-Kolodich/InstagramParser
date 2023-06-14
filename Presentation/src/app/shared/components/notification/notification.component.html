@@ -1,0 +1,8 @@
+<div>
+	<div matSnackBarLabel class="text-center">{{ notification.Message }}</div>
+	<div class="mat-app-background" *ngIf="{ value: countdown$ | async } as vm">
+		<mat-progress-bar mode="determinate" [value]="vm.value ?? 100"
+			[color]="notification.Type === 'Info' ? 'primary' : notification.Type === 'Error' ? 'warn' : 'accent'">
+		</mat-progress-bar>
+	</div>
+</div>

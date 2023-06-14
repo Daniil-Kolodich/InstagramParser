@@ -2,10 +2,15 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup } from '@angular/forms';
 import { finalize, Observable, Subject } from 'rxjs';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatButtonModule } from '@angular/material/button';
+import { NotificationComponent } from './components/notification/notification.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
-	declarations: [],
-	imports: [CommonModule],
+	declarations: [NotificationComponent],
+	imports: [CommonModule, MatSnackBarModule, MatButtonModule, MatProgressBarModule],
+	exports: [],
 })
 export class SharedModule {}
 
