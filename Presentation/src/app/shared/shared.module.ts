@@ -9,7 +9,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
 	declarations: [NotificationComponent],
-	imports: [CommonModule, MatSnackBarModule, MatButtonModule, MatProgressBarModule],
+	imports: [CommonModule, MatButtonModule, MatProgressBarModule, MatSnackBarModule],
 	exports: [],
 })
 export class SharedModule {}

@@ -13,6 +13,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { AuthenticationComponent } from './components/authentication/authentication.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 export const authenticationRoutes: Routes = [
 	{ path: 'login', component: LogInComponent },
@@ -33,6 +34,7 @@ export const authenticationRoutes: Routes = [
 		ReactiveFormsModule,
 		MatFormFieldModule,
 		MatInputModule,
+		MatSnackBarModule,
 	],
 })
 export class AuthenticationModule {}
