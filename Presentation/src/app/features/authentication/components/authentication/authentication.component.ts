@@ -18,7 +18,7 @@ export class AuthenticationComponent extends DestroyableComponent implements OnI
 		this.authenticationService
 			.authenticationResults$()
 			.Value.pipe(filter(nonNull), takeUntil(this.destroy$))
-			.subscribe(this.onAuthentication);
+			.subscribe((v) => this.onAuthentication(v));
 	}
 
 	private onAuthentication(value: AuthenticationResponse) {
