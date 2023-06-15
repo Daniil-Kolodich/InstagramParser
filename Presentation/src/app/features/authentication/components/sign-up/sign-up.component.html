@@ -18,9 +18,10 @@
 					<mat-error>Error</mat-error>
 				</mat-form-field>
 
-				<mat-form-field appearance="fill" hideRequiredMarker class="w-100">
+				<mat-form-field appPasswordToggle appearance="fill" hideRequiredMarker class="w-100">
 					<mat-label>Password</mat-label>
 					<input matInput [formControl]="form.controls.Password" required>
+					<mat-icon matIconSuffix></mat-icon>
 					<mat-error>Error</mat-error>
 				</mat-form-field>
 
