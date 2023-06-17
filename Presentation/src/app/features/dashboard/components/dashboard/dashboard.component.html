@@ -1,11 +1,18 @@
-<div class="row min-vh-100">
+<div class="row">
 	<div class="col-lg-4 col-6">
-		<div class="dashboard-element">
-			<a mat-flat-button color="primary" routerLink="create" class="w-100 text-center create-request mat-headline-4">Create Request</a>
-		</div>
-		<app-request-statistics class="dashboard-element"></app-request-statistics>
+		<mat-card>
+			<a mat-flat-button color="accent" routerLink="create" class="w-100 text-center create-request mat-headline-4 mb-0 mat-headline-4">
+				<mat-icon class="as-font">add_circle_outline</mat-icon>
+				Create Request
+			</a>
+		</mat-card>
+		<mat-card>
+			<app-request-statistics></app-request-statistics>
+		</mat-card>
 	</div>
 	<div class="col-lg-8 col-6">
-		<app-request-history class="dashboard-element"></app-request-history>
+		<mat-card>
+			<app-request-history class="dashboard-element"></app-request-history>
+		</mat-card>
 	</div>
 </div>

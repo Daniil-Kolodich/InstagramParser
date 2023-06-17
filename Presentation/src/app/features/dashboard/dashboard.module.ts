@@ -9,6 +9,7 @@ import { RequestHistoryComponent } from './components/request-history/request-hi
 import { RequestStatisticsComponent } from './components/request-statistics/request-statistics.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 export const dashboardRoutes: Routes = [
 	{
@@ -25,6 +26,6 @@ export const dashboardRoutes: Routes = [
 
 @NgModule({
 	declarations: [DashboardComponent, RequestCreationComponent, RequestHistoryComponent, RequestStatisticsComponent],
-	imports: [CommonModule, SharedModule, MatCardModule, MatButtonModule, RouterLink],
+	imports: [CommonModule, SharedModule, MatCardModule, MatButtonModule, RouterLink, MatIconModule],
 })
 export class DashboardModule {}
