@@ -1,5 +1,6 @@
 <header class="position-sticky top-0 z-3">
-	<mat-toolbar color="primary" class="mat-elevation-z24">
-		<span>Header</span>
+	<mat-toolbar color="primary" class="mat-elevation-z24"
+				 *ngIf="{title: title$ | async, subtitle: subtitle$ | async} as vm">
+		<span class="mat-h1 mb-0">{{vm.title === null ? defaultTitle : vm.title }}{{ vm.subtitle === null ? '' : ' : ' + vm.subtitle }}</span>
 	</mat-toolbar>
 </header>
