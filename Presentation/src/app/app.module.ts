@@ -9,6 +9,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ApiInterceptor } from './shared/interceptors/api.interceptor';
 import { AppRoutingModule } from './app-routing.module';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
 	bootstrap: [AppComponent],
@@ -25,6 +26,7 @@ import { AppRoutingModule } from './app-routing.module';
 		AuthenticationModule,
 		NgbModule,
 		HttpClientModule,
+		SharedModule,
 	],
 	providers: [
 		{
