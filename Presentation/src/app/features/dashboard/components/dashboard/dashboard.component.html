@@ -1,9 +1,11 @@
 <div class="row min-vh-100">
-	<div class="col-4">
-		<app-request-creation></app-request-creation>
-		<app-request-statistics></app-request-statistics>
+	<div class="col-lg-4 col-6">
+		<div class="dashboard-element">
+			<a mat-flat-button color="primary" routerLink="create" class="w-100 text-center create-request mat-headline-4">Create Request</a>
+		</div>
+		<app-request-statistics class="dashboard-element"></app-request-statistics>
 	</div>
-	<div class="col-8">
-		<app-request-history></app-request-history>
+	<div class="col-lg-8 col-6">
+		<app-request-history class="dashboard-element"></app-request-history>
 	</div>
 </div>
