@@ -5,10 +5,11 @@ import {
 	LoginUserRequest,
 } from '../../../../shared/services/authentication.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ControlsOf, ObservableResults } from '../../../../shared/shared.module';
 import { DestroyableComponent } from '../../../../shared/components/destroyable.component';
-import { delay, tap } from 'rxjs';
+import { filter, tap } from 'rxjs';
 import { NotificationService } from '../../../../shared/services/notification.service';
+import { ControlsOf, ObservableResults } from '../../../../shared/types';
+import { nonNull } from '../../../../shared/functions';
 
 @Component({
 	selector: 'app-log-in',
@@ -31,6 +32,7 @@ export class LogInComponent extends DestroyableComponent implements OnInit {
 		this.result$ = this.authenticationService.authenticationResults$();
 
 		this.result$.Error = this.result$.Error.pipe(
+			filter(nonNull),
 			tap(() => this.notificationService.error('Invalid Email or Password'))
 		);
 	}

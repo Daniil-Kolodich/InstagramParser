@@ -6,8 +6,7 @@ import {
 	RegisterUserRequest,
 } from '../../../../shared/services/authentication.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ControlsOf, ObservableResults } from '../../../../shared/shared.module';
-
+import { ControlsOf, ObservableResults } from '../../../../shared/types';
 @Component({
 	selector: 'app-sign-up',
 	templateUrl: './sign-up.component.html',

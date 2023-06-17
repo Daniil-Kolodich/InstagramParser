@@ -1,39 +1,59 @@
-import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, shareReplay, Subject, tap } from 'rxjs';
+import { inject, Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Observable, shareReplay, Subject } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { ObservableResults, observe, process, SubjectResults } from '../shared.module';
-
+import { ObservableResults, SubjectResults } from '../types';
+import { observe, process } from '../functions';
+import { JwtHelperService } from '@auth0/angular-jwt';
 @Injectable({
 	providedIn: 'root',
 })
-export class AuthenticationService {
+export class AuthenticationService implements OnDestroy {
+	private _jwtHelperService = new JwtHelperService();
+	private _tokenHandlerId: ReturnType<typeof setInterval> | undefined;
+
 	private readonly url = 'authentication/';
 	private readonly httpClient = inject(HttpClient);
-	private readonly _authenticated$ = new BehaviorSubject<boolean>(false);
+	private readonly _token$ = new BehaviorSubject<string | null>(this.retrieveToken());
 	private readonly _authenticationResults$: SubjectResults<AuthenticationResponse> = {
 		Value: new Subject<AuthenticationResponse | null>(),
 		Error: new Subject<unknown>(),
 		Loading: new Subject<boolean>(),
 	};
 
-	public authenticated$(): Observable<boolean> {
-		return this._authenticated$.pipe(shareReplay(1, 60));
+	public constructor() {
+		console.log('ctor called for auth service');
+		this._tokenHandlerId = setInterval(() => this.getToken(), 30000);
+	}
+
+	public ngOnDestroy() {
+		clearTimeout(this._tokenHandlerId);
+	}
+
+	public token$(): Observable<string | null> {
+		return this._token$.pipe(shareReplay(1, 120));
 	}
 
 	public authenticationResults$(): ObservableResults<AuthenticationResponse> {
 		return observe(this._authenticationResults$);
 	}
 
+	private saveToken(token: string) {
+		localStorage.setItem('auth_token', token);
+	}
+
+	private retrieveToken(): string | null {
+		return localStorage.getItem('auth_token');
+	}
+
 	public setToken(value: AuthenticationResponse): void {
-		localStorage.setItem('auth_token', value.Token);
-		this._authenticated$.next(true);
+		this.saveToken(value.token);
+		this._token$.next(value.token);
 	}
 
 	public getToken(): string | null {
-		const token = localStorage.getItem('auth_token');
-
-		if (token === null) {
-			this._authenticated$.next(false);
+		const token = this.retrieveToken();
+		if (token === null || this._jwtHelperService.isTokenExpired(token)) {
+			this._token$.next(null);
 			return null;
 		}
 
@@ -64,5 +84,5 @@ export type RegisterUserRequest = {
 };
 
 export type AuthenticationResponse = {
-	Token: string;
+	token: string;
 };

@@ -3,7 +3,7 @@ import { DestroyableComponent } from '../../../../shared/components/destroyable.
 import { AuthenticationResponse, AuthenticationService } from '../../../../shared/services/authentication.service';
 import { Router } from '@angular/router';
 import { filter, takeUntil } from 'rxjs';
-import { nonNull } from '../../../../shared/shared.module';
+import { nonNull } from '../../../../shared/functions';
 
 @Component({
 	selector: 'app-authentication',
