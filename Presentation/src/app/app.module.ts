@@ -3,11 +3,10 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { RouterModule, RouterOutlet } from '@angular/router';
-import { AuthenticationModule, authenticationRoutes } from './features/authentication/authentication.module';
+import { AuthenticationModule, authenticationRoute } from './features/authentication/authentication.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AuthenticationComponent } from './features/authentication/components/authentication/authentication.component';
 import { ApiInterceptor } from './shared/interceptors/api.interceptor';
 
 @NgModule({
@@ -17,7 +16,7 @@ import { ApiInterceptor } from './shared/interceptors/api.interceptor';
 		BrowserModule,
 		BrowserAnimationsModule,
 		RouterOutlet,
-		RouterModule.forRoot([{ path: 'auth', component: AuthenticationComponent, children: authenticationRoutes }]),
+		RouterModule.forRoot([authenticationRoute]),
 		AuthenticationModule,
 		NgbModule,
 		HttpClientModule,
