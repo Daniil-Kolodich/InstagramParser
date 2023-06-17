@@ -1,15 +1,17 @@
 import { inject, Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Observable, shareReplay, Subject } from 'rxjs';
+import { BehaviorSubject, map, Observable, shareReplay, startWith, Subject } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ObservableResults, SubjectResults } from '../types';
 import { observe, process } from '../functions';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { Router } from '@angular/router';
 @Injectable({
 	providedIn: 'root',
 })
 export class AuthenticationService implements OnDestroy {
+	private readonly router = inject(Router);
 	private _jwtHelperService = new JwtHelperService();
-	private _tokenHandlerId: ReturnType<typeof setInterval> | undefined;
+	private readonly _tokenHandlerId: ReturnType<typeof setInterval> | undefined;
 
 	private readonly url = 'authentication/';
 	private readonly httpClient = inject(HttpClient);
@@ -30,7 +32,14 @@ export class AuthenticationService implements OnDestroy {
 	}
 
 	public token$(): Observable<string | null> {
-		return this._token$.pipe(shareReplay(1, 120));
+		return this._token$.pipe(startWith(this.retrieveToken()), shareReplay(1, 120));
+	}
+
+	public authenticated$(): Observable<boolean> {
+		return this._token$.pipe(
+			startWith(this.retrieveToken()),
+			map((token) => token !== null && !this._jwtHelperService.isTokenExpired(token))
+		);
 	}
 
 	public authenticationResults$(): ObservableResults<AuthenticationResponse> {
@@ -59,6 +68,13 @@ export class AuthenticationService implements OnDestroy {
 
 		return token;
 	}
+
+	public logout() {
+		this._token$.next(null);
+		localStorage.clear();
+		this.router.navigate(['auth/login']);
+	}
+
 	public login(request: LoginUserRequest): void {
 		const query = new HttpParams({ fromObject: request });
 		const response = this.httpClient.get<AuthenticationResponse>(this.url + 'Get', { params: query });

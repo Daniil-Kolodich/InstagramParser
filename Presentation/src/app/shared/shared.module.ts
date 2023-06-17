@@ -9,10 +9,21 @@ import { HeaderComponent } from './components/header/header.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { FooterComponent } from './components/footer/footer.component';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 
 @NgModule({
 	declarations: [NotificationComponent, PasswordToggleDirective, HeaderComponent, FooterComponent],
-	imports: [CommonModule, MatButtonModule, MatProgressBarModule, MatSnackBarModule, MatCardModule, MatToolbarModule],
+	imports: [
+		CommonModule,
+		MatButtonModule,
+		MatProgressBarModule,
+		MatSnackBarModule,
+		MatCardModule,
+		MatToolbarModule,
+		MatIconModule,
+		RouterLink,
+	],
 	exports: [PasswordToggleDirective, HeaderComponent, FooterComponent],
 })
 export class SharedModule {}

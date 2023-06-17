@@ -10,7 +10,7 @@ export const authenticatedGuard: CanActivateFn = (route, state) => {
 		map((token) => {
 			if (token === null) {
 				console.log('token expired mate');
-				router.navigate(['auth/login']);
+				authService.logout();
 
 				return false;
 			}
