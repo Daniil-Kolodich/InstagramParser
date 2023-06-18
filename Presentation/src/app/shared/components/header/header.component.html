@@ -2,12 +2,12 @@
 <header class="position-sticky top-0 z-3">
 	<mat-toolbar color="primary" class="mat-elevation-z24"
 				 *ngIf="{title: title$ | async, subtitle: subtitle$ | async,
-				 username: userName$ | async, authenticated: authenticated$ | async} as vm">
+				 user: user$ | async, authenticated: authenticated$ | async} as vm">
 		<div class="d-flex justify-content-between align-items-center w-100">
 			<div
 				class="mat-h1 mb-0">{{vm.title === null ? defaultTitle : vm.title }}{{ vm.subtitle === null ? '' : ' : ' + vm.subtitle }}</div>
 			<div *ngIf="vm.authenticated" class="profile-info mat-h2 mb-0">
-				<div *ngIf="vm.username" class="mt-auto mb-auto">Welcome, {{ vm.username }}!</div>
+				<div *ngIf="vm.user" class="mt-auto mb-auto">Welcome, {{ vm.user.userName }}!</div>
 				<button mat-fab color="warn" (click)="logout()">
 					<mat-icon>power_settings_new</mat-icon>
 				</button>

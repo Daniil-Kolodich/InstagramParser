@@ -1,5 +1,5 @@
 import { inject, Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, map, Observable, shareReplay, startWith, Subject } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, map, Observable, shareReplay, startWith, Subject } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ObservableResults, SubjectResults } from '../types';
 import { observe, process } from '../functions';
@@ -32,13 +32,24 @@ export class AuthenticationService implements OnDestroy {
 	}
 
 	public token$(): Observable<string | null> {
-		return this._token$.pipe(startWith(this.retrieveToken()), shareReplay(1, 120));
+		return this._token$.pipe(
+			startWith(this.retrieveToken()),
+			map((token) => {
+				if (token !== null && !this._jwtHelperService.isTokenExpired(token)) {
+					return token;
+				}
+
+				return null;
+			}),
+			shareReplay(1, 120)
+		);
 	}
 
 	public authenticated$(): Observable<boolean> {
 		return this._token$.pipe(
 			startWith(this.retrieveToken()),
-			map((token) => token !== null && !this._jwtHelperService.isTokenExpired(token))
+			map((token) => token !== null && !this._jwtHelperService.isTokenExpired(token)),
+			distinctUntilChanged()
 		);
 	}
 
