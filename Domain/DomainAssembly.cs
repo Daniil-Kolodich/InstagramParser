@@ -8,6 +8,8 @@ using Domain.ParsingDomain;
 using Domain.ParsingDomain.Concrete;
 using Domain.SubscriptionDomain;
 using Domain.SubscriptionDomain.Concrete;
+using Domain.UsersDomain;
+using Domain.UsersDomain.Concrete;
 using Instagram;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -31,6 +33,10 @@ public static class DomainAssembly
         
         // Parsing
         services.AddScoped<IParsingService, ParsingService>();
+        
+        // User
+        services.AddScoped<IUserService, UserService>();
+        
         
         DatabaseAssembly.ConfigureServices(services);
         InstagramAssembly.ConfigureServices(services);

@@ -28,7 +28,7 @@ public class AuthenticationController : ControllerBase
     {
         var result = await _loginService.Login(request);
 
-        return Ok(_jwtHelper.GenerateToken(result.Id.ToString()));
+        return Ok(new AuthenticationResponse(_jwtHelper.GenerateToken(result.Id.ToString())));
     }
 
     [HttpPost(nameof(Post))]
@@ -36,6 +36,8 @@ public class AuthenticationController : ControllerBase
     {
         var result = await _registrationService.Register(request);
 
-        return Ok(_jwtHelper.GenerateToken(result.Id.ToString()));
+        return Ok(new AuthenticationResponse(_jwtHelper.GenerateToken(result.Id.ToString())));
     }
 }
+
+record AuthenticationResponse(string Token);
