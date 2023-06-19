@@ -15,6 +15,8 @@ export function nonNull<T>(value: T | null): value is T {
 
 export function process<T>(request: Observable<T>, subject: SubjectResults<T>): void {
 	subject.Loading.next(true);
+	subject.Value.next(null);
+	subject.Error.next(null);
 
 	request.pipe(finalize(() => subject.Loading.next(false))).subscribe({
 		next: (result) => {

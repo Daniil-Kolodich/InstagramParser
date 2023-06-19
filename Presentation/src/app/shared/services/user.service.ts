@@ -9,7 +9,7 @@ import { observe, process } from '../functions';
 })
 export class UserService {
 	private readonly httpClient = inject(HttpClient);
-	private readonly url = 'users/';
+	private readonly url = 'user/';
 
 	private readonly _user$: SubjectResults<GetUserResponse> = {
 		Value: new Subject<GetUserResponse | null>(),

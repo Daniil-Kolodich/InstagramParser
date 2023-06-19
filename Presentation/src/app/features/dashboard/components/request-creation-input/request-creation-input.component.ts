@@ -1,9 +1,13 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { SubscriptionSource } from '../../../../shared/services/dashboard.service';
 import { FormArray, FormControl } from '@angular/forms';
-import { map, Observable } from 'rxjs';
+import { catchError, debounceTime, filter, Observable, of, switchMap, takeUntil } from 'rxjs';
 import { DestroyableComponent } from '../../../../shared/components/destroyable.component';
 import { HttpClient } from '@angular/common/http';
+import {
+	GetInstagramAccountResponse,
+	InstagramAccountService,
+} from '../../../../shared/services/instagram-account.service';
 
 @Component({
 	selector: 'app-request-creation-input[form][type]',
@@ -12,45 +16,31 @@ import { HttpClient } from '@angular/common/http';
 })
 export class RequestCreationInputComponent extends DestroyableComponent implements OnInit {
 	private readonly httpClient = inject(HttpClient);
+	private readonly instagramAccountService = inject(InstagramAccountService);
+
 	@Input() public type!: string;
 	@Input() public form!: [Source: FormControl<SubscriptionSource>, Accounts: FormArray<FormControl<string>>];
 
-	public readonly searchInput = new FormControl<InstagramAccount | string>('');
+	public readonly searchInput = new FormControl<GetInstagramAccountResponse | string>('');
 	public readonly SubscriptionSource = SubscriptionSource;
-	public accounts$?: Observable<InstagramAccount[]>;
-
-	public onSearchSubmit($event: any) {
-		console.log('event', $event);
-	}
+	public account$?: Observable<GetInstagramAccountResponse | undefined>;
 
 	public ngOnInit(): void {
-		this.accounts$ = this.searchInput.valueChanges.pipe(
-			map((value) => {
-				const name = typeof value === 'string' ? value : value?.UserName ?? '';
-				// may be includes instead of startsWith
-				return accounts.filter((a) => a.UserName.startsWith(name));
-			})
+		this.account$ = this.searchInput.valueChanges.pipe(
+			takeUntil(this.destroy$),
+			debounceTime(300),
+			filter(isString),
+			switchMap((value) =>
+				this.instagramAccountService.getByUserName(value).pipe(catchError(() => of(undefined)))
+			)
 		);
 	}
 
-	public displayWith(account: InstagramAccount): string {
-		return account.UserName;
+	public displayWith(account: GetInstagramAccountResponse): string {
+		return account.userName;
 	}
 }
 
-const accounts: InstagramAccount[] = [
-	{ Id: '1', Picture: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/Flag_of_Texas.svg', UserName: 'danon' },
-	{
-		Id: '2',
-		Picture: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/Flag_of_Florida.svg',
-		UserName: 'danissimo',
-	},
-	{
-		Id: '3',
-		Picture: 'https://upload.wikimedia.org/wikipedia/commons/0/01/Flag_of_California.svg',
-		UserName: 'denchick',
-	},
-	{ Id: '4', Picture: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Flag_of_Arkansas.svg', UserName: 'hello' },
-];
-
-type InstagramAccount = { Picture: string; UserName: string; Id: string };
+function isString<T>(value: T | string | null): value is string {
+	return typeof value === 'string';
+}
