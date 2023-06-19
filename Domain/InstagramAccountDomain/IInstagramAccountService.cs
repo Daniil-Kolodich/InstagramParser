@@ -1,15 +1,17 @@
 using Database.Entities;
+using Domain.InstagramAccountDomain.Responses;
 
 namespace Domain.InstagramAccountDomain;
 
-internal interface IInstagramAccountService
+public interface IInstagramAccountService
 {
-    Task<IEnumerable<InstagramAccount>> CreateSourceAccounts(string[] accounts, Subscription subscription);
-    Task<IEnumerable<InstagramAccount>> CreateTargetAccounts(string[] accounts, Subscription subscription);
+    internal Task<IEnumerable<InstagramAccount>> CreateSourceAccounts(string[] accounts, Subscription subscription);
+    internal Task<IEnumerable<InstagramAccount>> CreateTargetAccounts(string[] accounts, Subscription subscription);
 
-    Task AddFollowers(InstagramAccount parent, string[] accounts, Subscription subscription);
-    Task AddFollowings(InstagramAccount parent, string[] accounts, Subscription subscription);
-
-    void Decline(InstagramAccount account, Subscription subscription);
-    void DeclineAll(IEnumerable<InstagramAccount> accounts, Subscription subscription);
+    internal Task AddFollowers(InstagramAccount parent, string[] accounts, Subscription subscription);
+    internal Task AddFollowings(InstagramAccount parent, string[] accounts, Subscription subscription);
+// TODO: should move getting account info and followers here
+    internal void Decline(InstagramAccount account, Subscription subscription);
+    internal void DeclineAll(IEnumerable<InstagramAccount> accounts, Subscription subscription);
+    Task<GetInstagramAccountResponse> GetInstagramAccountByUserName(string userName);
 }

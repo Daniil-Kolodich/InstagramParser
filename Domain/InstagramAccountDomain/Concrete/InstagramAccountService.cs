@@ -1,16 +1,20 @@
 using Database.Entities;
 using Database.Repositories;
 using Domain.InstagramAccountDomain.Constants;
+using Domain.InstagramAccountDomain.Responses;
+using Instagram;
 
 namespace Domain.InstagramAccountDomain.Concrete;
 
 internal class InstagramAccountService : IInstagramAccountService
 {
     private readonly ICommandRepository<InstagramAccount> _commandRepository;
+    private readonly IUserManager _userManager;
 
-    public InstagramAccountService(ICommandRepository<InstagramAccount> commandRepository)
+    public InstagramAccountService(ICommandRepository<InstagramAccount> commandRepository, IUserManager userManager)
     {
         _commandRepository = commandRepository;
+        _userManager = userManager;
     }
 
     public Task<IEnumerable<InstagramAccount>>
@@ -49,6 +53,13 @@ internal class InstagramAccountService : IInstagramAccountService
         }
         
         _commandRepository.UpdateRange(instagramAccounts);
+    }
+
+    public async Task<GetInstagramAccountResponse> GetInstagramAccountByUserName(string userName)
+    {
+        var result = await _userManager.GetUserByUsername(userName, CancellationToken.None);
+
+        return new GetInstagramAccountResponse(result.Pk, result.Username, result.ProfilePicUrl);
     }
 
     private async Task AddChildren(InstagramAccount parent, InstagramAccountType accountType, string[] accounts,

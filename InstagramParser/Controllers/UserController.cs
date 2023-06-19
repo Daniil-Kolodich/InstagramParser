@@ -9,12 +9,12 @@ namespace InstagramParser.Controllers;
 [ApiController]
 [Authorize]
 [Route("[controller]")]
-public class UsersController : ControllerBase
+public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
     private readonly IIdentityService _identityService;
 
-    public UsersController(IUserService userService, IIdentityService identityService)
+    public UserController(IUserService userService, IIdentityService identityService)
     {
         _userService = userService;
         _identityService = identityService;
