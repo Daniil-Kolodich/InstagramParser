@@ -1,5 +1,7 @@
-<mat-card>
-	<mat-card-content>
-		create request ?
-	</mat-card-content>
-</mat-card>
+<form *ngIf="form" [formGroup]="form">
+	<div class="row">
+		<app-request-creation-input [form]="getSourceForms(form)" type="source" class="col-6"></app-request-creation-input>
+		<app-request-creation-input [form]="getTargetForms(form)" type="target" class="col-6"></app-request-creation-input>
+		<button mat-flat-button class="col-6 offset-3 mt-3" color="accent">Submit</button>
+	</div>
+</form>

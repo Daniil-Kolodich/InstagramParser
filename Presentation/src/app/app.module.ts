@@ -10,6 +10,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ApiInterceptor } from './shared/interceptors/api.interceptor';
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
+import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
 	bootstrap: [AppComponent],
@@ -27,6 +29,8 @@ import { SharedModule } from './shared/shared.module';
 		NgbModule,
 		HttpClientModule,
 		SharedModule,
+		MatSelectModule,
+		MatAutocompleteModule,
 	],
 	providers: [
 		{

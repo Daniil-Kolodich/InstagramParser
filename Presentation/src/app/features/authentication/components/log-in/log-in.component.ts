@@ -24,7 +24,7 @@ export class LogInComponent extends DestroyableComponent implements OnInit {
 	public form: FormGroup<ControlsOf<LoginUserRequest>> | undefined;
 	public result$: ObservableResults<AuthenticationResponse> | undefined;
 	public ngOnInit(): void {
-		this.form = this.formBuilder.nonNullable.group({
+		this.form = this.formBuilder.nonNullable.group<LoginUserRequest>({
 			Email: '',
 			Password: '',
 		});

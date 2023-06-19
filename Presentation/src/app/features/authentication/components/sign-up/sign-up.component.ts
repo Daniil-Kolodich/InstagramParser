@@ -20,7 +20,7 @@ export class SignUpComponent extends DestroyableComponent implements OnInit {
 	public result$: ObservableResults<AuthenticationResponse> | undefined;
 
 	public ngOnInit(): void {
-		this.form = this.formBuilder.nonNullable.group({
+		this.form = this.formBuilder.nonNullable.group<RegisterUserRequest>({
 			UserName: '',
 			Email: '',
 			Password: '',

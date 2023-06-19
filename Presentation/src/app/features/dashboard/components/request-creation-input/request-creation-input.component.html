@@ -1,0 +1,22 @@
+<mat-form-field class="w-100">
+	<mat-label>Select {{type}} accounts type</mat-label>
+	<mat-select [formControl]="form[0]">
+		<mat-option [value]="SubscriptionSource.AccountsList">Accounts List</mat-option>
+		<mat-option [value]="SubscriptionSource.AccountsFollowers">Followers from accounts</mat-option>
+		<mat-option [value]="SubscriptionSource.AccountsFollowings">Followings from accounts</mat-option>
+	</mat-select>
+</mat-form-field>
+<mat-form-field appearance="fill" hideRequiredMarker class="w-100">
+	<mat-label>Enter {{type}} account</mat-label>
+	<input matInput required [formControl]="searchInput" [matAutocomplete]="auto">
+	<mat-icon matIconSuffix (click)="onSearchSubmit('found')">add_circle_outline</mat-icon>
+	<mat-autocomplete #auto [displayWith]="displayWith">
+		<mat-option *ngFor="let account of accounts$ | async" [value]="account">
+			<img alt="" [src]="account.Picture" [height]="32" [width]="32">
+			{{account.UserName}}
+		</mat-option>
+	</mat-autocomplete>
+</mat-form-field>
+<mat-card>
+	ge
+</mat-card>

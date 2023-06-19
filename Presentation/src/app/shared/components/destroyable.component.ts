@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Component({
-	template: '',
+	template: '*:not(a)',
 })
 export abstract class DestroyableComponent implements OnDestroy {
 	protected readonly destroy$ = new Subject<unknown>();
