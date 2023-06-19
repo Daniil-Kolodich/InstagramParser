@@ -6,18 +6,20 @@
 		<mat-option [value]="SubscriptionSource.AccountsFollowings">Followings from accounts</mat-option>
 	</mat-select>
 </mat-form-field>
-<mat-form-field appearance="fill" hideRequiredMarker class="w-100" *ngIf="{ value: account$ | async } as vm">
+<mat-form-field appearance="fill" hideRequiredMarker class="w-100" *ngIf="{ value: account$?.Value | async, loading: account$?.Loading | async, error: account$?.Error | async } as vm">
 	<mat-label>Enter {{type}} account</mat-label>
 	<input matInput required [formControl]="searchInput" [matAutocomplete]="auto">
-	<mat-icon matIconSuffix>add_circle_outline</mat-icon>
+	<mat-icon matIconSuffix *ngIf="searchInput.valid" (click)="addAccount()">add_circle_outline</mat-icon>
+	<mat-error>Please select valid account</mat-error>
 	<mat-autocomplete #auto [displayWith]="displayWith">
-		<mat-option *ngIf="vm.value" [value]="vm.value">
+		<mat-option *ngIf="vm.value !== null" [value]="vm.value">
 			{{vm.value.userName}}
 		</mat-option>
-		<mat-option *ngIf="vm.value === undefined" disabled>Not Found</mat-option>
-		<mat-option *ngIf="vm.value === null" disabled>Searching...</mat-option>
+		<mat-option *ngIf="vm.error !== null && vm.value === null" disabled>Not Found</mat-option>
+		<mat-option *ngIf="vm.loading" disabled>Searching...</mat-option>
 	</mat-autocomplete>
 </mat-form-field>
 <mat-card>
-	hehe
+	{{searchInput.value | json}}
+	{{searchInput.valid | json}}
 </mat-card>
