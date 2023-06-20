@@ -32,13 +32,20 @@
 <mat-card>
 	<mat-card-header>
 		<mat-card-title>Selected {{type}} accounts : {{accountControls.controls.length}}</mat-card-title>
+		<mat-card-subtitle *ngIf="form.Source.value !== SubscriptionSource.AccountsList">
+			Total linked accounts: {{getLinkedAccounts()}}
+		</mat-card-subtitle>
 	</mat-card-header>
 	<mat-card-content class="d-flex flex-wrap w-100 flex-fill justify-content-evenly">
 		<mat-card *ngFor="let control of accountControls.controls"
-				  class="mat-mdc-elevation-specific mat-elevation-z12 m-4 position-relative pb-3">
+				  class="mat-mdc-elevation-specific mat-elevation-z12 m-4 position-relative pb-4">
 			<mat-card-header>
-				<mat-card-title>{{control.value.fullName}}</mat-card-title>
+				<mat-card-title *ngIf="control.value">{{control.value.fullName}}</mat-card-title>
 				<mat-card-subtitle>@{{control.value.userName}}</mat-card-subtitle>
+				<mat-card-subtitle *ngIf="form.Source.value !== SubscriptionSource.AccountsList">
+					Linked accounts:
+					{{form.Source.value === SubscriptionSource.AccountsFollowers ? control.value.followersCount : control.value.followingsCount}}
+				</mat-card-subtitle>
 			</mat-card-header>
 			<button mat-fab color="warn" class="absolute-rb-corner" (click)="removeControl(control)">
 				<mat-icon>delete_outline</mat-icon>

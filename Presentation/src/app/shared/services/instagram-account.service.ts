@@ -16,4 +16,10 @@ export class InstagramAccountService {
 	}
 }
 
-export type GetInstagramAccountResponse = { userName: string; id: string; fullName: string };
+export type GetInstagramAccountResponse = {
+	userName: string;
+	id: string;
+	fullName?: string;
+	followersCount: number;
+	followingsCount: number;
+};

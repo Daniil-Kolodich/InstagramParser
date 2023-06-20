@@ -1,26 +1,17 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
-import {
-	AbstractControl,
-	FormArray,
-	FormControl,
-	NonNullableFormBuilder,
-	ValidationErrors,
-	ValidatorFn,
-} from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, NonNullableFormBuilder, ValidationErrors } from '@angular/forms';
 import {
 	catchError,
 	debounceTime,
-	EMPTY,
 	filter,
 	finalize,
-	flatMap,
+	mergeMap,
 	of,
 	skip,
 	startWith,
 	Subject,
 	switchMap,
 	takeUntil,
-	mergeMap,
 	tap,
 } from 'rxjs';
 import { DestroyableComponent } from '../../../../shared/components/destroyable.component';
@@ -87,7 +78,7 @@ export class RequestCreationInputComponent extends DestroyableComponent implemen
 				this.loading$.next(true);
 
 				return this.instagramAccountService.getByUserName(value).pipe(
-					startWith({ userName: value, id: '111' + value, fullName: 'FullName of' + value }),
+					startWith(this.test()),
 					finalize(() => this.loading$.next(false)),
 					catchError(() => {
 						this.notFound$.next({});
@@ -96,6 +87,16 @@ export class RequestCreationInputComponent extends DestroyableComponent implemen
 				);
 			})
 		);
+	}
+
+	private test(): GetInstagramAccountResponse {
+		return {
+			userName: 'userName',
+			id: 'id',
+			fullName: 'fullName',
+			followersCount: 100,
+			followingsCount: 45,
+		};
 	}
 
 	public addAccount(account: GetInstagramAccountResponse | string | null) {
@@ -115,6 +116,18 @@ export class RequestCreationInputComponent extends DestroyableComponent implemen
 
 	public displayWith(account: GetInstagramAccountResponse): string {
 		return account.userName;
+	}
+
+	public getLinkedAccounts(): number {
+		let sum = 0;
+		for (const control of this.accountControls.controls) {
+			sum +=
+				this.form.Source.value === SubscriptionSource.AccountsFollowers
+					? control.value.followersCount
+					: control.value.followingsCount;
+		}
+
+		return sum;
 	}
 
 	public isString = isString;
