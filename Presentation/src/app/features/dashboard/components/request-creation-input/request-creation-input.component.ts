@@ -30,6 +30,7 @@ import {
 } from '../../../../shared/services/instagram-account.service';
 import { ObservableResults } from '../../../../shared/types';
 import { SubscriptionSource } from '../../../../shared/services/subscription.service';
+import { isString } from '../../../../shared/functions';
 
 @Component({
 	selector: 'app-request-creation-input[form][type]',
@@ -47,6 +48,7 @@ export class RequestCreationInputComponent extends DestroyableComponent implemen
 	public readonly searchInput = new FormControl<GetInstagramAccountResponse | string>('', [correctInstagramAccount]);
 	public readonly SubscriptionSource = SubscriptionSource;
 
+	// TODO: need to fix this not to handle manually each time plz
 	private notFound$ = new Subject<unknown | null>();
 	private loading$ = new Subject<boolean>();
 	public account$: ObservableResults<GetInstagramAccountResponse> = {
@@ -65,19 +67,21 @@ export class RequestCreationInputComponent extends DestroyableComponent implemen
 				this.form.Accounts.push(this.formBuilder.control(value.id));
 			});
 
-		this.addAccount({ userName: 'danon', id: '1dn', fullName: 'Daniil Kolodich' });
-		this.addAccount({ userName: 'danissimo', id: '2do', fullName: 'Daniil Mishenin' });
-		this.addAccount({ userName: 'koshkina', id: '3ka', fullName: 'Nastya Shiba' });
-		this.addAccount({ userName: 'yarick', id: '4yk', fullName: '9rolsav Ozimok' });
-		this.addAccount({ userName: 'kser', id: '5kr', fullName: 'Yura Chirko' });
-		this.addAccount({ userName: 'gleb', id: '6gb', fullName: 'Gleb Punko' });
-		this.addAccount({ userName: 'shevchik', id: '7sk', fullName: 'Masksim Shev4ik' });
+		// this.addAccount({ userName: 'danon', id: '1dn', fullName: 'Daniil Kolodich' });
+		// this.addAccount({ userName: 'danissimo', id: '2do', fullName: 'Daniil Mishenin' });
+		// this.addAccount({ userName: 'koshkina', id: '3ka', fullName: 'Nastya Shiba' });
+		// this.addAccount({ userName: 'yarick', id: '4yk', fullName: '9rolsav Ozimok' });
+		// this.addAccount({ userName: 'kser', id: '5kr', fullName: 'Yura Chirko' });
+		// this.addAccount({ userName: 'gleb', id: '6gb', fullName: 'Gleb Punko' });
+		// this.addAccount({ userName: 'shevchik', id: '7sk', fullName: 'Masksim Shev4ik' });
 
+		// TODO : refactor this to make use of some smart function
 		this.account$.Value = this.searchInput.valueChanges.pipe(
 			takeUntil(this.destroy$),
 			debounceTime(300),
 			filter(isString),
 			filter((value) => value.length > 0),
+			// TODO : replace with observeOnce call if possible
 			switchMap((value) => {
 				this.notFound$.next(null);
 				this.loading$.next(true);
@@ -113,7 +117,7 @@ export class RequestCreationInputComponent extends DestroyableComponent implemen
 		return account.userName;
 	}
 
-	protected readonly isString = isString;
+	public isString = isString;
 }
 
 export type SourceAndAccountsControls = {
@@ -125,8 +129,4 @@ function correctInstagramAccount(
 	control: AbstractControl<GetInstagramAccountResponse | string>
 ): ValidationErrors | null {
 	return isString(control.value) && control.value.length > 0 ? { invalidAccount: { value: control.value } } : null;
-}
-
-function isString<T>(value: T | string | null): value is string {
-	return typeof value === 'string';
 }
