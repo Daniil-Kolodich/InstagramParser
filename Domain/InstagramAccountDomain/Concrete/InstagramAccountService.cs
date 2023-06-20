@@ -25,7 +25,7 @@ internal class InstagramAccountService : IInstagramAccountService
         CreateTargetAccounts(string[] accounts, Subscription subscription) =>
         CreateInstagramAccounts(accounts, InstagramAccountType.To, subscription);
 
-    public Task AddFollowers(InstagramAccount parent, string[] accounts, Subscription subscription) =>         
+    public Task AddFollowers(InstagramAccount parent, string[] accounts, Subscription subscription) =>
         AddChildren(parent, InstagramAccountType.From, accounts, subscription);
 
     public Task AddFollowings(InstagramAccount parent, string[] accounts, Subscription subscription) =>
@@ -34,24 +34,24 @@ internal class InstagramAccountService : IInstagramAccountService
     public void Decline(InstagramAccount account, Subscription subscription)
     {
         account.DeclinedReason = subscription.Type;
-        
+
         _commandRepository.Update(account);
     }
 
     public void DeclineAll(IEnumerable<InstagramAccount> accounts, Subscription subscription)
     {
         var instagramAccounts = accounts as InstagramAccount[] ?? accounts.ToArray();
-        
+
         if (!instagramAccounts.Any())
         {
             return;
         }
-        
+
         foreach (var account in instagramAccounts)
         {
             account.DeclinedReason = subscription.Type;
         }
-        
+
         _commandRepository.UpdateRange(instagramAccounts);
     }
 
@@ -59,7 +59,11 @@ internal class InstagramAccountService : IInstagramAccountService
     {
         var result = await _userManager.GetUserByUsername(userName, CancellationToken.None);
 
-        return new GetInstagramAccountResponse(result.Pk, result.Username);
+        return new GetInstagramAccountResponse(result.Pk, 
+            result.Username, 
+            result.FullName, 
+            result.FollowerCount,
+            result.FollowingCount);
     }
 
     private async Task AddChildren(InstagramAccount parent, InstagramAccountType accountType, string[] accounts,
@@ -68,14 +72,15 @@ internal class InstagramAccountService : IInstagramAccountService
         // will this mean that old ones are deleted ?
         parent.Children = await CreateInstagramAccounts(accounts, accountType, subscription);
         parent.IsProcessed = true;
-        
+
         _commandRepository.Update(parent);
     }
 
-    private async Task<IEnumerable<InstagramAccount>> CreateInstagramAccounts(string[] accounts, InstagramAccountType accountType, Subscription subscription)
+    private async Task<IEnumerable<InstagramAccount>> CreateInstagramAccounts(string[] accounts,
+        InstagramAccountType accountType, Subscription subscription)
     {
         var result = new List<InstagramAccount>(accounts.Length);
-        
+
         foreach (var accountId in accounts)
         {
             var account = new InstagramAccount()

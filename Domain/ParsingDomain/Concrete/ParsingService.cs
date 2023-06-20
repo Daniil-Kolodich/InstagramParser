@@ -204,22 +204,22 @@ internal class ParsingService : IParsingService
             .Where(a => a.OriginAccount() && a.TargetAccount())
             .ToList();
 
-        bool IsChildOf(InstagramAccount account, IEnumerable<InstagramAccount> parents) =>
-            parents.Any(x => x.Id == account.ParentId);
         
         if (subscription.Source != (int)SubscriptionSource.AccountsList)
         {
-            sources = subscription.InstagramAccounts.Where(x => IsChildOf(x, sources)).ToList();
+            sources = subscription.InstagramAccounts.Where(x => x.IsChildOf(sources)).ToList();
         }
 
         if (subscription.Target != (int)SubscriptionSource.AccountsList)
         {
-            targets = subscription.InstagramAccounts.Where(x => IsChildOf(x, targets)).ToList();
+            targets = subscription.InstagramAccounts.Where(x => x.IsChildOf(targets)).ToList();
         }
 
         var isSearchingFollowers = IsFollowersFaster(sources, targets,
             _followersManager.ChildrenPerRequest(), _followingsManager.ChildrenPerRequest());
 
+        // TODO: idk will later stuff work because of this swap
+        // Debug.Assert('Who cares')
         return isSearchingFollowers
             ? (_followersManager, sources.ToArray(), targets.ToArray())
             : (_followingsManager, targets.ToArray(), sources.ToArray());

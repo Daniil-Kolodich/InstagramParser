@@ -92,11 +92,10 @@ internal class SubscriptionService : ISubscriptionService
             (SubscriptionSource)entity.Target,
             (SubscriptionStatus)entity.Status,
             (SubscriptionType)entity.Type,
-            entity.InstagramAccounts.Count(a => a.SourceAccount() && a.OriginAccount()),
-            entity.InstagramAccounts.Count(a => a.TargetAccount() && a.OriginAccount()),
-            entity.InstagramAccounts.Where(a => !a.DeclinedAccount() && !a.IsDeleted && a.TargetAccount())
-                .Select(a => a.UserName).ToArray(),
+            entity.SourceOriginAccounts().Select(InstagramAccountExtensions.ToResponse).ToArray(),
+            entity.TargetOriginAccounts().Select(InstagramAccountExtensions.ToResponse).ToArray(),
+            entity.MatchingAccounts().Select(InstagramAccountExtensions.ToResponse).ToArray(),
             entity.CreatedWhen
-        );   
+        );
     }
 }
