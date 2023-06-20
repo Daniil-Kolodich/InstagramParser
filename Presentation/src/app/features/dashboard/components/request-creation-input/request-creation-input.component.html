@@ -22,9 +22,10 @@
 			<mat-option *ngIf="vm.loading" disabled>Searching...</mat-option>
 		</mat-autocomplete>
 	</mat-form-field>
-	<button mat-flat-button class="w-25 h-56px" color="accent"
+	<button type="button" mat-flat-button class="w-25 h-56px" color="accent"
 			[disabled]="searchInput.value === null || isString(searchInput.value) || searchInput.invalid"
-			(click)="addAccount(searchInput.value)">Add
+			(click)="addAccount(searchInput.value)">
+		Add
 	</button>
 </div>
 

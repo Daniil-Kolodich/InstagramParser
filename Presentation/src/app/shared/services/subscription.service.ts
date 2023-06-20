@@ -56,12 +56,12 @@ export class SubscriptionService {
 }
 
 export type GetSubscriptionResponse = {
-	Id: number;
-	Source: SubscriptionSource;
-	Target: SubscriptionSource;
-	Status: SubscriptionStatus;
-	Type: SubscriptionType;
-	Accounts: string[];
+	id: number;
+	source: SubscriptionSource;
+	target: SubscriptionSource;
+	status: SubscriptionStatus;
+	type: SubscriptionType;
+	accounts: string[];
 };
 
 export type FollowCheckRequest = {

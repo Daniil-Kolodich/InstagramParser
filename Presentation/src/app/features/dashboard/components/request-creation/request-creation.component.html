@@ -1,7 +1,7 @@
 <form *ngIf="form" [formGroup]="form" (submit)="onSubmit()">
-	<div class="row">
+	<div class="row" *ngIf="{loading: request$?.Loading | async} as vm">
 		<app-request-creation-input [form]="getSourceForms(form)" type="source" class="col-6"></app-request-creation-input>
 		<app-request-creation-input [form]="getTargetForms(form)" type="target" class="col-6"></app-request-creation-input>
-		<button type="submit" mat-flat-button class="col-6 offset-3 mt-3" color="accent" [disabled]="form.invalid">Submit</button>
+		<button type="submit" mat-flat-button class="col-6 offset-3 mt-3" color="accent" [disabled]="form.invalid || vm.loading === true">Submit</button>
 	</div>
 </form>

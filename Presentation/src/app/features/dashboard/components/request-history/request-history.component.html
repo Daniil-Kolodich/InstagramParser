@@ -1,1 +1,4 @@
-<p>request-history works!</p>
+<div
+	*ngIf="{value: subscriptions$.Value | async, error: subscriptions$.Error | async, loading: subscriptions$.Loading | async} as vm">
+	{{ vm | json }}
+</div>
