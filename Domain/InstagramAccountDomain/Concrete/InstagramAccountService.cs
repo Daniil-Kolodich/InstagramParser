@@ -59,7 +59,7 @@ internal class InstagramAccountService : IInstagramAccountService
     {
         var result = await _userManager.GetUserByUsername(userName, CancellationToken.None);
 
-        return new GetInstagramAccountResponse(result.Pk, result.Username, result.ProfilePicUrl);
+        return new GetInstagramAccountResponse(result.Pk, result.Username);
     }
 
     private async Task AddChildren(InstagramAccount parent, InstagramAccountType accountType, string[] accounts,

@@ -14,7 +14,7 @@ internal abstract class FakeFollowManager : IFollowManager
         throw new NotImplementedException();
     }
 
-    public Task<ICollection<UserShort>> Get(string userId, int? amount, CancellationToken cancellationToken)
+    public Task<IEnumerable<ICollection<UserShort>>> Get(string userId, int? amount, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

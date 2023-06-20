@@ -3,6 +3,7 @@ using Database.Entities;
 using Database.Repositories;
 using Domain.InstagramAccountDomain;
 using Domain.SharedDomain;
+using Domain.SharedDomain.Extensions;
 using Domain.SubscriptionDomain.Models.Constants;
 using Domain.SubscriptionDomain.Models.Requests;
 using Domain.SubscriptionDomain.Models.Responses;
@@ -12,8 +13,11 @@ namespace Domain.SubscriptionDomain.Concrete;
 
 internal class SubscriptionService : ISubscriptionService
 {
-    private DomainError SubscriptionSaveError => new("Unable to create subscription", HttpStatusCode.InternalServerError);
-    private DomainError SubscriptionNotFoundError(int id) => new($"Unable to get subscription by id {id}", HttpStatusCode.NotFound);
+    private DomainError SubscriptionSaveError =>
+        new("Unable to create subscription", HttpStatusCode.InternalServerError);
+
+    private DomainError SubscriptionNotFoundError(int id) =>
+        new($"Unable to get subscription by id {id}", HttpStatusCode.NotFound);
 
     private readonly IQueryRepository<Subscription> _queryRepository;
     private readonly ICommandRepository<Subscription> _commandRepository;
@@ -22,7 +26,9 @@ internal class SubscriptionService : ISubscriptionService
     private readonly IInstagramAccountService _instagramAccountService;
     private readonly IIdentityService _identityService;
 
-    public SubscriptionService(IQueryRepository<Subscription> queryRepository, ICommandRepository<Subscription> commandRepository, IIdentityService identityService, IUnitOfWork unitOfWork, IInstagramAccountService instagramAccountService)
+    public SubscriptionService(IQueryRepository<Subscription> queryRepository,
+        ICommandRepository<Subscription> commandRepository, IIdentityService identityService, IUnitOfWork unitOfWork,
+        IInstagramAccountService instagramAccountService)
     {
         _queryRepository = queryRepository;
         _commandRepository = commandRepository;
@@ -39,14 +45,16 @@ internal class SubscriptionService : ISubscriptionService
         {
             throw SubscriptionNotFoundError(id);
         }
-        
-        return new GetSubscriptionResponse(
-            entity.Id,
-            (SubscriptionSource) entity.Source,
-            (SubscriptionSource) entity.Target,
-            (SubscriptionStatus) entity.Status,
-            (SubscriptionType) entity.Type,
-            entity.InstagramAccounts.Select(a => a.InstagramId).ToArray());
+
+        return CreateResponse(entity);
+    }
+
+    public async Task<IEnumerable<GetSubscriptionResponse>> GetAll()
+    {
+        var results =
+            await _queryRepository.GetAllAsync(new SubscriptionByUserIdSpecification(_identityService.UserId));
+
+        return results.Select(CreateResponse);
     }
 
     public async Task<GetSubscriptionResponse> FollowCheck(FollowCheckRequest request)
@@ -73,12 +81,22 @@ internal class SubscriptionService : ISubscriptionService
             throw SubscriptionSaveError;
         }
 
+        return CreateResponse(entity);
+    }
+
+    private static GetSubscriptionResponse CreateResponse(Subscription entity)
+    {
         return new GetSubscriptionResponse(
             entity.Id,
-            (SubscriptionSource) entity.Source,
-            (SubscriptionSource) entity.Target,
-            (SubscriptionStatus) entity.Status,
-            (SubscriptionType) entity.Type,
-            entity.InstagramAccounts.Select(a => a.InstagramId).ToArray());
+            (SubscriptionSource)entity.Source,
+            (SubscriptionSource)entity.Target,
+            (SubscriptionStatus)entity.Status,
+            (SubscriptionType)entity.Type,
+            entity.InstagramAccounts.Count(a => a.SourceAccount() && a.OriginAccount()),
+            entity.InstagramAccounts.Count(a => a.TargetAccount() && a.OriginAccount()),
+            entity.InstagramAccounts.Where(a => !a.DeclinedAccount() && !a.IsDeleted && a.TargetAccount())
+                .Select(a => a.UserName).ToArray(),
+            entity.CreatedWhen
+        );   
     }
 }

@@ -17,10 +17,16 @@ public class SubscriptionController : ControllerBase
         _subscriptionService = subscriptionService;
     }
 
-    [HttpGet(nameof(GetById))]
-    public async Task<IActionResult> GetById([FromQuery] int id)
+    [HttpGet(nameof(Id))]
+    public async Task<IActionResult> Id([FromQuery] int id)
     {
         return Ok(await _subscriptionService.GetById(id));
+    }
+    
+    [HttpGet(nameof(All))]
+    public async Task<IActionResult> All()
+    {
+        return Ok(await _subscriptionService.GetAll());
     }
     
     [HttpPost(nameof(FollowCheck))]
