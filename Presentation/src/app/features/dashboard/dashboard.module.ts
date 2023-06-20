@@ -18,6 +18,7 @@ import { RequestCreationInputComponent } from './components/request-creation-inp
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { RequestInfoComponent } from './components/request-info/request-info.component';
 
 export const dashboardRoutes: Routes = [
 	{
@@ -30,6 +31,11 @@ export const dashboardRoutes: Routes = [
 		component: RequestCreationComponent,
 		canActivate: [authenticatedGuard],
 	},
+	{
+		path: 'dashboard/:id',
+		component: RequestInfoComponent,
+		canActivate: [authenticatedGuard],
+	},
 ];
 
 @NgModule({
@@ -39,6 +45,7 @@ export const dashboardRoutes: Routes = [
 		RequestHistoryComponent,
 		RequestStatisticsComponent,
 		RequestCreationInputComponent,
+		RequestInfoComponent,
 	],
 	imports: [
 		CommonModule,

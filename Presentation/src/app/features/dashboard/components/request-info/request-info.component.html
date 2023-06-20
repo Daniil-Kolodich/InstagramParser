@@ -1,0 +1,4 @@
+<div
+	*ngIf="{value: subscription$?.Value | async, error: subscription$?.Error | async, loading: subscription$?.Loading | async} as vm">
+	{{ vm | json }}
+</div>
