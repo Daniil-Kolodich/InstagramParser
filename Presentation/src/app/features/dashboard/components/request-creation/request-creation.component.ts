@@ -1,12 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ControlsOf } from '../../../../shared/types';
-import {
-	DashboardService,
-	FollowCheckRequest,
-	SubscriptionSource,
-} from '../../../../shared/services/dashboard.service';
+import { DashboardService } from '../../../../shared/services/dashboard.service';
 import { SourceAndAccountsControls } from '../request-creation-input/request-creation-input.component';
+import {
+	FollowCheckRequest,
+	SubscriptionService,
+	SubscriptionSource,
+} from '../../../../shared/services/subscription.service';
 
 @Component({
 	selector: 'app-request-creation',
@@ -14,23 +15,31 @@ import { SourceAndAccountsControls } from '../request-creation-input/request-cre
 	styleUrls: ['./request-creation.component.sass'],
 })
 export class RequestCreationComponent implements OnInit {
-	private readonly formBuilder: FormBuilder = inject(FormBuilder);
+	private readonly formBuilder = inject(NonNullableFormBuilder);
 	private readonly dashboardService = inject(DashboardService);
+	private readonly subscriptionService = inject(SubscriptionService);
+
 	public form?: FormGroup<ControlsOf<FollowCheckRequest>>;
 
 	public ngOnInit() {
-		this.form = this.formBuilder.nonNullable.group({
-			Target: this.formBuilder.nonNullable.array<string>([]),
-			Source: this.formBuilder.nonNullable.array<string>([]),
-			SubscriptionTarget: this.formBuilder.nonNullable.control<SubscriptionSource>(
-				SubscriptionSource.AccountsList
-			),
-			SubscriptionSource: this.formBuilder.nonNullable.control<SubscriptionSource>(
-				SubscriptionSource.AccountsList
-			),
+		this.form = this.formBuilder.group({
+			Target: this.formBuilder.array<string>([], [Validators.required]),
+			Source: this.formBuilder.array<string>([], [Validators.required]),
+			SubscriptionTarget: this.formBuilder.control<SubscriptionSource>(SubscriptionSource.AccountsList, [
+				Validators.required,
+			]),
+			SubscriptionSource: this.formBuilder.control<SubscriptionSource>(SubscriptionSource.AccountsList, [
+				Validators.required,
+			]),
 		});
+	}
 
-		// this.form?.controls.Target.addValidators(Validators.minLength(1));
+	public onSubmit(): void {
+		if (!this.form || this.form.invalid) {
+			return;
+		}
+
+		this.subscriptionService.followCheck(this.form.getRawValue());
 	}
 
 	public getSourceForms(form: FormGroup<ControlsOf<FollowCheckRequest>>): SourceAndAccountsControls {

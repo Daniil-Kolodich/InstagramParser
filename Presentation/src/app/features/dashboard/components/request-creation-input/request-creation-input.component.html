@@ -13,7 +13,7 @@
 		<mat-label>Enter {{type}} account</mat-label>
 		<input matInput [formControl]="searchInput" [matAutocomplete]="auto">
 		<span matTextPrefix>@</span>
-		<mat-error>Please select valid account {{searchInput.errors | json}}</mat-error>
+		<mat-error>Please select valid account</mat-error>
 		<mat-autocomplete #auto [displayWith]="displayWith">
 			<mat-option *ngIf="vm.value !== null" [value]="vm.value">
 				{{vm.value.userName}}
@@ -39,14 +39,9 @@
 				<mat-card-title>{{control.value.fullName}}</mat-card-title>
 				<mat-card-subtitle>@{{control.value.userName}}</mat-card-subtitle>
 			</mat-card-header>
-<!--			i can insert like followers / followings count here or based on {{type}}-->
-<!--			<mat-card-content></mat-card-content>-->
 			<button mat-fab color="warn" class="absolute-rb-corner" (click)="removeControl(control)">
 				<mat-icon>delete_outline</mat-icon>
 			</button>
 		</mat-card>
 	</mat-card-content>
-	<mat-card-footer>
-		{{form.Accounts.getRawValue() | json}}
-	</mat-card-footer>
 </mat-card>

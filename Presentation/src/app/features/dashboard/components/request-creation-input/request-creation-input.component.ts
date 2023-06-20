@@ -1,5 +1,4 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { SubscriptionSource } from '../../../../shared/services/dashboard.service';
 import {
 	AbstractControl,
 	FormArray,
@@ -30,6 +29,7 @@ import {
 	InstagramAccountService,
 } from '../../../../shared/services/instagram-account.service';
 import { ObservableResults } from '../../../../shared/types';
+import { SubscriptionSource } from '../../../../shared/services/subscription.service';
 
 @Component({
 	selector: 'app-request-creation-input[form][type]',
@@ -129,9 +129,4 @@ function correctInstagramAccount(
 
 function isString<T>(value: T | string | null): value is string {
 	return typeof value === 'string';
-}
-
-function isControlTypeString<T>(control: AbstractControl<T | string>): control is AbstractControl<T> {
-	const value = control.value;
-	return isString(value);
 }
