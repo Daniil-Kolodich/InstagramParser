@@ -16,6 +16,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RequestCreationInputComponent } from './components/request-creation-input/request-creation-input.component';
 import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 export const dashboardRoutes: Routes = [
 	{
@@ -50,6 +52,8 @@ export const dashboardRoutes: Routes = [
 		MatAutocompleteModule,
 		ReactiveFormsModule,
 		MatInputModule,
+		MatListModule,
+		MatGridListModule,
 	],
 })
 export class DashboardModule {}

@@ -1,25 +1,52 @@
-<mat-form-field class="w-100">
+<mat-form-field class="w-100" color="accent">
 	<mat-label>Select {{type}} accounts type</mat-label>
-	<mat-select [formControl]="form[0]">
+	<mat-select [formControl]="form.Source">
 		<mat-option [value]="SubscriptionSource.AccountsList">Accounts List</mat-option>
 		<mat-option [value]="SubscriptionSource.AccountsFollowers">Followers from accounts</mat-option>
 		<mat-option [value]="SubscriptionSource.AccountsFollowings">Followings from accounts</mat-option>
 	</mat-select>
 </mat-form-field>
-<mat-form-field appearance="fill" hideRequiredMarker class="w-100" *ngIf="{ value: account$?.Value | async, loading: account$?.Loading | async, error: account$?.Error | async } as vm">
-	<mat-label>Enter {{type}} account</mat-label>
-	<input matInput required [formControl]="searchInput" [matAutocomplete]="auto">
-	<mat-icon matIconSuffix *ngIf="searchInput.valid" (click)="addAccount()">add_circle_outline</mat-icon>
-	<mat-error>Please select valid account</mat-error>
-	<mat-autocomplete #auto [displayWith]="displayWith">
-		<mat-option *ngIf="vm.value !== null" [value]="vm.value">
-			{{vm.value.userName}}
-		</mat-option>
-		<mat-option *ngIf="vm.error !== null && vm.value === null" disabled>Not Found</mat-option>
-		<mat-option *ngIf="vm.loading" disabled>Searching...</mat-option>
-	</mat-autocomplete>
-</mat-form-field>
+
+<div class="w-100 d-flex flex-row">
+	<mat-form-field appearance="outline" hideRequiredMarker class="w-75" color="accent"
+					*ngIf="{ value: account$?.Value | async, loading: account$?.Loading | async, error: account$?.Error | async } as vm">
+		<mat-label>Enter {{type}} account</mat-label>
+		<input matInput [formControl]="searchInput" [matAutocomplete]="auto">
+		<span matTextPrefix>@</span>
+		<mat-error>Please select valid account {{searchInput.errors | json}}</mat-error>
+		<mat-autocomplete #auto [displayWith]="displayWith">
+			<mat-option *ngIf="vm.value !== null" [value]="vm.value">
+				{{vm.value.userName}}
+			</mat-option>
+			<mat-option *ngIf="vm.error !== null && vm.value === null" disabled>Not Found</mat-option>
+			<mat-option *ngIf="vm.loading" disabled>Searching...</mat-option>
+		</mat-autocomplete>
+	</mat-form-field>
+	<button mat-flat-button class="w-25 h-56px" color="accent"
+			[disabled]="searchInput.value === null || isString(searchInput.value) || searchInput.invalid"
+			(click)="addAccount(searchInput.value)">Add
+	</button>
+</div>
+
 <mat-card>
-	{{searchInput.value | json}}
-	{{searchInput.valid | json}}
+	<mat-card-header>
+		<mat-card-title>Selected {{type}} accounts : {{accountControls.controls.length}}</mat-card-title>
+	</mat-card-header>
+	<mat-card-content class="d-flex flex-wrap w-100 flex-fill justify-content-evenly">
+		<mat-card *ngFor="let control of accountControls.controls"
+				  class="mat-mdc-elevation-specific mat-elevation-z12 m-4 position-relative pb-3">
+			<mat-card-header>
+				<mat-card-title>{{control.value.fullName}}</mat-card-title>
+				<mat-card-subtitle>@{{control.value.userName}}</mat-card-subtitle>
+			</mat-card-header>
+<!--			i can insert like followers / followings count here or based on {{type}}-->
+<!--			<mat-card-content></mat-card-content>-->
+			<button mat-fab color="warn" class="absolute-rb-corner" (click)="removeControl(control)">
+				<mat-icon>delete_outline</mat-icon>
+			</button>
+		</mat-card>
+	</mat-card-content>
+	<mat-card-footer>
+		{{form.Accounts.getRawValue() | json}}
+	</mat-card-footer>
 </mat-card>

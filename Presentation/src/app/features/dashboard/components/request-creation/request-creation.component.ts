@@ -1,11 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ControlsOf } from '../../../../shared/types';
 import {
 	DashboardService,
 	FollowCheckRequest,
 	SubscriptionSource,
 } from '../../../../shared/services/dashboard.service';
+import { SourceAndAccountsControls } from '../request-creation-input/request-creation-input.component';
 
 @Component({
 	selector: 'app-request-creation',
@@ -28,17 +29,15 @@ export class RequestCreationComponent implements OnInit {
 				SubscriptionSource.AccountsList
 			),
 		});
+
+		// this.form?.controls.Target.addValidators(Validators.minLength(1));
 	}
 
-	public getSourceForms(
-		form: FormGroup<ControlsOf<FollowCheckRequest>>
-	): [FormControl<SubscriptionSource>, FormArray<FormControl<string>>] {
-		return [form.controls.SubscriptionSource, form.controls.Source];
+	public getSourceForms(form: FormGroup<ControlsOf<FollowCheckRequest>>): SourceAndAccountsControls {
+		return { Source: form.controls.SubscriptionSource, Accounts: form.controls.Source };
 	}
 
-	public getTargetForms(
-		form: FormGroup<ControlsOf<FollowCheckRequest>>
-	): [FormControl<SubscriptionSource>, FormArray<FormControl<string>>] {
-		return [form.controls.SubscriptionTarget, form.controls.Target];
+	public getTargetForms(form: FormGroup<ControlsOf<FollowCheckRequest>>): SourceAndAccountsControls {
+		return { Source: form.controls.SubscriptionTarget, Accounts: form.controls.Target };
 	}
 }
