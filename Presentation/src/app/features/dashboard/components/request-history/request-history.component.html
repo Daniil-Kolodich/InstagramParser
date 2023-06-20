@@ -1,4 +1,42 @@
-<div
-	*ngIf="{value: subscriptions$.Value | async, error: subscriptions$.Error | async, loading: subscriptions$.Loading | async} as vm">
-	{{ vm | json }}
-</div>
+<mat-card *ngIf="{ value: subscriptions$.Value | async, loading: subscriptions$.Loading | async } as vm">
+	<mat-card-header>
+		<mat-card-title>Requests history</mat-card-title>
+		<mat-card-subtitle *ngIf="vm.value">Total requests count: {{vm.value.length}}</mat-card-subtitle>
+	</mat-card-header>
+
+	<mat-divider class="m-3"></mat-divider>
+
+	<ng-container *ngIf="vm.value">
+		<mat-card-content *ngIf="vm.value.length > 0; else noRequests">
+			<mat-accordion multi>
+				<mat-expansion-panel *ngFor="let request of vm.value">
+					<mat-expansion-panel-header>
+						<mat-panel-title>
+							Request #{{request.id}} from {{request.createdAt | date: 'medium'}}
+						</mat-panel-title>
+						<mat-panel-description>
+							{{SubscriptionStatus[request.status]}}
+						</mat-panel-description>
+					</mat-expansion-panel-header>
+
+					<div class="d-flex flex-wrap flex-fill justify-content-evenly">
+						<mat-card *ngFor="let info of infos(request)"
+								  class="mat-mdc-elevation-specific mat-elevation-z8 m-2 position-relative p-4">
+							<mat-card-title>{{info.Title}}</mat-card-title>
+							<mat-card-subtitle>{{info.Description}}</mat-card-subtitle>
+						</mat-card>
+					</div>
+				</mat-expansion-panel>
+			</mat-accordion>
+		</mat-card-content>
+		<ng-template #noRequests>
+			<mat-card-content>
+				You don't have any requests to view yet
+			</mat-card-content>
+		</ng-template>
+	</ng-container>
+
+	<mat-card-footer *ngIf="vm.loading === true" class="m-3 p-5">
+		<mat-progress-bar mode="query"></mat-progress-bar>
+	</mat-card-footer>
+</mat-card>

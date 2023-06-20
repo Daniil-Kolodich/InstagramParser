@@ -19,6 +19,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { RequestInfoComponent } from './components/request-info/request-info.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 export const dashboardRoutes: Routes = [
 	{
@@ -61,6 +63,8 @@ export const dashboardRoutes: Routes = [
 		MatInputModule,
 		MatListModule,
 		MatGridListModule,
+		MatProgressBarModule,
+		MatExpansionModule,
 	],
 })
 export class DashboardModule {}

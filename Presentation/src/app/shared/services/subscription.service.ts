@@ -24,8 +24,9 @@ export class SubscriptionService {
 	}
 
 	public getAll() {
-		const response = this.httpClient.get<GetSubscriptionResponse[]>(this.url + 'All').pipe(delay(3000));
-		// .pipe(repeat({ delay: () => this.subscribed$ }), delay(2500), tap(console.log));
+		const response = this.httpClient
+			.get<GetSubscriptionResponse[]>(this.url + 'All')
+			.pipe(repeat({ delay: () => this.subscribed$ }), delay(2500));
 
 		process(response, this._subscriptions$);
 	}
@@ -61,7 +62,10 @@ export type GetSubscriptionResponse = {
 	target: SubscriptionSource;
 	status: SubscriptionStatus;
 	type: SubscriptionType;
-	accounts: string[];
+	sourceAccounts: number;
+	targetAccounts: number;
+	selectedAccounts: string[];
+	createdAt: Date;
 };
 
 export type FollowCheckRequest = {

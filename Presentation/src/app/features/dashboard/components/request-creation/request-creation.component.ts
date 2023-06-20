@@ -53,7 +53,10 @@ export class RequestCreationComponent extends DestroyableComponent implements On
 			takeUntil(this.destroy$),
 			filter(nonNull),
 			map((v) => v.id)
-		).subscribe((id) => this.router.navigate(['/dashboard', id], { relativeTo: this.route }));
+		).subscribe((id) => {
+			this.notificationService.success(`Created request #${id}`);
+			this.router.navigate(['/dashboard', id], { relativeTo: this.route });
+		});
 
 		this.request$.Error.pipe(takeUntil(this.destroy$), filter(nonNull)).subscribe(() =>
 			this.notificationService.error('Unable to create request')

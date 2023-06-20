@@ -38,16 +38,21 @@ export function process<T>(request: Observable<T>, subject: SubjectResults<T>): 
 	subject.Value.next(null);
 	subject.Error.next(null);
 
-	request.pipe(finalize(() => subject.Loading.next(false))).subscribe({
-		next: (result) => {
-			subject.Value.next(result);
-			subject.Error.next(null);
-		},
-		error: () => {
-			subject.Value.next(null);
-			subject.Error.next({});
-		},
-	});
+	request
+		.pipe(
+			take(1),
+			finalize(() => subject.Loading.next(false))
+		)
+		.subscribe({
+			next: (result) => {
+				subject.Value.next(result);
+				subject.Error.next(null);
+			},
+			error: () => {
+				subject.Value.next(null);
+				subject.Error.next({});
+			},
+		});
 }
 
 export function isString<T>(value: T | string | null): value is string {
