@@ -1,5 +1,14 @@
 import { inject, Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, distinctUntilChanged, map, Observable, shareReplay, startWith, Subject } from 'rxjs';
+import {
+	BehaviorSubject,
+	distinctUntilChanged,
+	map,
+	Observable,
+	ReplaySubject,
+	shareReplay,
+	startWith,
+	Subject,
+} from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ObservableResults, SubjectResults } from '../types';
 import { observe, process } from '../functions';
@@ -17,9 +26,9 @@ export class AuthenticationService implements OnDestroy {
 	private readonly httpClient = inject(HttpClient);
 	private readonly _token$ = new BehaviorSubject<string | null>(this.retrieveToken());
 	private readonly _authenticationResults$: SubjectResults<AuthenticationResponse> = {
-		Value: new Subject<AuthenticationResponse | null>(),
-		Error: new Subject<unknown>(),
-		Loading: new Subject<boolean>(),
+		Value: new ReplaySubject<AuthenticationResponse | null>(1),
+		Error: new ReplaySubject<unknown>(1),
+		Loading: new ReplaySubject<boolean>(1),
 	};
 
 	public constructor() {

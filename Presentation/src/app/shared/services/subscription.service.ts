@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { delay, repeat, Subject, tap } from 'rxjs';
+import { delay, repeat, ReplaySubject, Subject, tap } from 'rxjs';
 import { ObservableResults, SubjectResults } from '../types';
 import { observe, observeOnce, process } from '../functions';
 
@@ -14,9 +14,9 @@ export class SubscriptionService {
 	private readonly subscribed$ = new Subject<unknown>();
 
 	private readonly _subscriptions$: SubjectResults<GetSubscriptionResponse[]> = {
-		Value: new Subject<GetSubscriptionResponse[] | null>(),
-		Error: new Subject<unknown | null>(),
-		Loading: new Subject<boolean>(),
+		Value: new ReplaySubject<GetSubscriptionResponse[] | null>(1),
+		Error: new ReplaySubject<unknown | null>(1),
+		Loading: new ReplaySubject<boolean>(1),
 	};
 
 	public subscriptions$(): ObservableResults<GetSubscriptionResponse[]> {
@@ -24,9 +24,9 @@ export class SubscriptionService {
 	}
 
 	public getAll() {
-		const response = this.httpClient
-			.get<GetSubscriptionResponse[]>(this.url + 'All')
-			.pipe(repeat({ delay: () => this.subscribed$ }));
+		const response = this.httpClient.get<GetSubscriptionResponse[]>(this.url + 'All').pipe(delay(3000));
+		// .pipe(repeat({ delay: () => this.subscribed$ }), delay(2500), tap(console.log));
+
 		process(response, this._subscriptions$);
 	}
 

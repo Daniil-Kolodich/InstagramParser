@@ -1,5 +1,5 @@
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { Observable, Subject } from 'rxjs';
+import { Observable, ReplaySubject, Subject } from 'rxjs';
 
 export type ControlsOf<T extends Record<string, unknown>> = {
 	[K in keyof T]: T[K] extends Record<any, unknown>
@@ -10,9 +10,9 @@ export type ControlsOf<T extends Record<string, unknown>> = {
 };
 
 export type SubjectResults<T> = {
-	Value: Subject<T | null>;
-	Error: Subject<unknown | null>;
-	Loading: Subject<boolean>;
+	Value: ReplaySubject<T | null>;
+	Error: ReplaySubject<unknown | null>;
+	Loading: ReplaySubject<boolean>;
 };
 
 export type ObservableResults<T> = {

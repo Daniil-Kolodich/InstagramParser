@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject } from 'rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
 import { SubjectResults, ObservableResults } from '../types';
 import { observe, process } from '../functions';
 
@@ -12,9 +12,9 @@ export class UserService {
 	private readonly url = 'user/';
 
 	private readonly _user$: SubjectResults<GetUserResponse> = {
-		Value: new Subject<GetUserResponse | null>(),
-		Error: new Subject<unknown | null>(),
-		Loading: new Subject<boolean>(),
+		Value: new ReplaySubject<GetUserResponse | null>(),
+		Error: new ReplaySubject<unknown | null>(),
+		Loading: new ReplaySubject<boolean>(),
 	};
 
 	public user$(): ObservableResults<GetUserResponse> {
