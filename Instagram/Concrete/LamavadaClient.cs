@@ -831,6 +831,50 @@ internal class LamavadaClient : ILamavadaClient
 	}
 }
 
+public class FakeUser
+{
+	[JsonProperty("pk", Required = Required.Default)]
+	public string Pk { private get; set; } = null;
+
+	[JsonProperty("id", Required = Required.Default)]
+	public string Id { private get; set; } = null;
+
+	public string Key()
+	{
+		if (!string.IsNullOrEmpty(Pk))
+		{
+			return Pk;
+		}
+		
+		if (!string.IsNullOrEmpty(Id))
+		{
+			return Id;
+		}
+
+		throw new ArgumentNullException();
+	}
+	
+	[JsonProperty("username", Required = Required.Always)]
+	[Required(AllowEmptyStrings = true)]
+	public string Username { get; set; }
+
+	[JsonProperty("full_name", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+	public string FullName { get; set; }
+
+	[JsonProperty("edge_followed_by", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+	public Countable FollowerCount { get; set; }
+
+	[JsonProperty("edge_follow", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+	public Countable FollowingCount { get; set; }
+}
+
+public class Countable 
+{
+	[JsonProperty("count", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+	public int Count { get; set; }
+}
+
+
 [GeneratedCode("NJsonSchema", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
 public class User
 {
