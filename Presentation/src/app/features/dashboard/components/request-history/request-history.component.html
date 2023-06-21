@@ -11,7 +11,7 @@
 			<mat-accordion multi>
 				<mat-expansion-panel *ngFor="let request of vm.value">
 					<mat-expansion-panel-header>
-						<mat-panel-title>
+						<mat-panel-title class="text-trim">
 							Request #{{request.id}} from {{request.createdAt | date: 'medium'}}
 						</mat-panel-title>
 						<mat-panel-description>
@@ -26,6 +26,8 @@
 							<mat-card-subtitle>{{info.Description}}</mat-card-subtitle>
 						</mat-card>
 					</div>
+
+					<a mat-flat-button color="accent" class="w-100 p-2 mt-3" [routerLink]="['/dashboard', request.id]">Details</a>
 				</mat-expansion-panel>
 			</mat-accordion>
 		</mat-card-content>
