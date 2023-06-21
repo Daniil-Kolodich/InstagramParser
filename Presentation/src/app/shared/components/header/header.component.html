@@ -4,8 +4,11 @@
 				 *ngIf="{title: title$ | async, subtitle: subtitle$ | async,
 				 user: user$ | async, authenticated: authenticated$ | async} as vm">
 		<div class="d-flex justify-content-between align-items-center w-100">
-			<div
-				class="mat-h1 mb-0">{{vm.title === null ? defaultTitle : vm.title }}{{ vm.subtitle === null ? '' : ' : ' + vm.subtitle }}</div>
+				<a mat-stroked-button class="mat-h1 mb-0" [color]="vm.authenticated ? 'accent' : 'primary'" [disabled]="!vm.authenticated" routerLink="/dashboard">
+					<mat-icon class="as-font">home</mat-icon>
+					{{vm.title === null ? defaultTitle : vm.title }}{{ vm.subtitle === null ? '' : ' : ' + vm.subtitle }}
+				</a>
+
 			<div *ngIf="vm.authenticated" class="profile-info mat-h2 mb-0">
 				<div *ngIf="vm.user" class="mt-auto mb-auto">Welcome, {{ vm.user.userName }}!</div>
 				<button mat-fab color="warn" (click)="logout()">
