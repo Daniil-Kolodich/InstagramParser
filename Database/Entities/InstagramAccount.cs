@@ -2,8 +2,9 @@ namespace Database.Entities;
 
 public class InstagramAccount : Entity
 {
-    public string InstagramId { get; set; }
-    public string UserName { get; set; }
+    public string InstagramId { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
+    public string FullName { get; set; } = string.Empty;
     public int InstagramAccountType { get; set; }
     public bool IsProcessed { get; set; }
 

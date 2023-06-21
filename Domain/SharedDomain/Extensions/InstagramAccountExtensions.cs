@@ -1,6 +1,6 @@
 using Database.Entities;
 using Domain.InstagramAccountDomain.Constants;
-using Domain.InstagramAccountDomain.Responses;
+using Domain.SubscriptionDomain.Models.Requests;
 
 namespace Domain.SharedDomain.Extensions;
 
@@ -19,11 +19,10 @@ public static class InstagramAccountExtensions
 
     public static bool DeclinedAccount(this InstagramAccount account) => account.DeclinedReason.HasValue;
 
-    public static GetInstagramAccountResponse ToResponse(this InstagramAccount account) =>
-        new GetInstagramAccountResponse(account.InstagramId,
+    public static InstagramAccountRequest ToResponse(this InstagramAccount account) =>
+        new(account.InstagramId,
             account.UserName,
-            // TODO: should i add FullName to entity?
-            null,
+            account.FullName,
             account.FollowersCount,
             account.FollowingsCount
         );

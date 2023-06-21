@@ -1,7 +1,7 @@
 using Database.Entities;
 using Database.Repositories;
 using Domain.InstagramAccountDomain.Constants;
-using Domain.InstagramAccountDomain.Responses;
+using Domain.SubscriptionDomain.Models.Requests;
 using Instagram;
 
 namespace Domain.InstagramAccountDomain.Concrete;
@@ -18,11 +18,11 @@ internal class InstagramAccountService : IInstagramAccountService
     }
 
     public Task<IEnumerable<InstagramAccount>>
-        CreateSourceAccounts(string[] accounts, Subscription subscription) =>
+        CreateSourceAccounts(InstagramAccountRequest[] accounts, Subscription subscription) =>
         CreateInstagramAccounts(accounts, InstagramAccountType.From, subscription);
 
     public Task<IEnumerable<InstagramAccount>>
-        CreateTargetAccounts(string[] accounts, Subscription subscription) =>
+        CreateTargetAccounts(InstagramAccountRequest[] accounts, Subscription subscription) =>
         CreateInstagramAccounts(accounts, InstagramAccountType.To, subscription);
 
     public Task AddFollowers(InstagramAccount parent, string[] accounts, Subscription subscription) =>
@@ -55,13 +55,13 @@ internal class InstagramAccountService : IInstagramAccountService
         _commandRepository.UpdateRange(instagramAccounts);
     }
 
-    public async Task<GetInstagramAccountResponse> GetInstagramAccountByUserName(string userName)
+    public async Task<InstagramAccountRequest> GetInstagramAccountByUserName(string userName)
     {
         var result = await _userManager.GetUserByUsername(userName, CancellationToken.None);
 
-        return new GetInstagramAccountResponse(result.Pk, 
-            result.Username, 
-            result.FullName, 
+        return new InstagramAccountRequest(result.Pk,
+            result.Username,
+            result.FullName,
             result.FollowerCount,
             result.FollowingCount);
     }
@@ -70,28 +70,33 @@ internal class InstagramAccountService : IInstagramAccountService
         Subscription subscription)
     {
         // will this mean that old ones are deleted ?
-        parent.Children = await CreateInstagramAccounts(accounts, accountType, subscription);
+        parent.Children = await CreateInstagramAccounts(
+            accounts.Select(x => new InstagramAccountRequest(x, string.Empty, string.Empty, 0, 0)).ToArray(),
+            accountType, subscription);
         parent.IsProcessed = true;
 
         _commandRepository.Update(parent);
     }
 
-    private async Task<IEnumerable<InstagramAccount>> CreateInstagramAccounts(string[] accounts,
+    private async Task<IEnumerable<InstagramAccount>> CreateInstagramAccounts(InstagramAccountRequest[] accounts,
         InstagramAccountType accountType, Subscription subscription)
     {
         var result = new List<InstagramAccount>(accounts.Length);
 
-        foreach (var accountId in accounts)
+        foreach (var account in accounts)
         {
-            var account = new InstagramAccount()
+            var entity = new InstagramAccount()
             {
-                InstagramId = accountId,
-                UserName = String.Empty,
+                InstagramId = account.Id,
+                FullName = account.FullName,
+                UserName = account.UserName,
+                FollowingsCount = account.FollowingsCount,
+                FollowersCount = account.FollowersCount,
                 InstagramAccountType = (int)accountType,
                 SubscriptionId = subscription.Id
             };
 
-            result.Add(await _commandRepository.AddAsync(account));
+            result.Add(await _commandRepository.AddAsync(entity));
         }
 
         return result;

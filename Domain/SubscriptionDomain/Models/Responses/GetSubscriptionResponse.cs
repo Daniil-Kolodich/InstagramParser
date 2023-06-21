@@ -1,5 +1,5 @@
-using Domain.InstagramAccountDomain.Responses;
 using Domain.SubscriptionDomain.Models.Constants;
+using Domain.SubscriptionDomain.Models.Requests;
 
 namespace Domain.SubscriptionDomain.Models.Responses;
 
@@ -8,7 +8,7 @@ public record GetSubscriptionResponse(int Id,
     SubscriptionSource Target, 
     SubscriptionStatus Status, 
     SubscriptionType Type, 
-    GetInstagramAccountResponse[] SourceAccounts, 
-    GetInstagramAccountResponse[] TargetAccounts,
-    GetInstagramAccountResponse[] SelectedAccounts,
+    InstagramAccountRequest[] SourceAccounts, 
+    InstagramAccountRequest[] TargetAccounts,
+    InstagramAccountRequest[] SelectedAccounts,
     DateTimeOffset CreatedAt);

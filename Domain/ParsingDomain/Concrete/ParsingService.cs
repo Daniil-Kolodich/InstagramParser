@@ -53,7 +53,6 @@ internal class ParsingService : IParsingService
         if (subscription.Status == (int)SubscriptionStatus.Pending)
         {
             await PrepareNestedListsForProcessing(subscription);
-            await FetchAdditionalInformation(subscription);
         
             subscription.Status = (int)SubscriptionStatus.ReadyForProcessing;
             _commandSubscriptionRepository.Update(subscription);
@@ -82,6 +81,12 @@ internal class ParsingService : IParsingService
             _instagramAccountService.DeclineAll(await searchTask, subscription);
             await _unitOfWork.SaveChangesAsync();
         }
+
+        await SetAdditionalInformationForWinners(subscription.MatchingAccounts());
+
+        subscription.Status = (int)SubscriptionStatus.Completed;
+        _commandSubscriptionRepository.Update(subscription);
+        await _unitOfWork.SaveChangesAsync();
     }
 
     internal static async Task<InstagramAccount[]> SearchByName(InstagramAccount[] accountsLeft, IFollowManager followManager,
@@ -178,17 +183,18 @@ internal class ParsingService : IParsingService
         return result.ToArray();
     }
 
-    internal async Task FetchAdditionalInformation(Subscription subscription)
+    internal async Task SetAdditionalInformationForWinners(IEnumerable<InstagramAccount> accounts)
     {
-        foreach (var account in subscription.InstagramAccounts)
+        foreach (var account in accounts)
         {
             var accountInfo = await _userManager.GetUserById(account.InstagramId, CancellationToken.None);
             account.UserName = accountInfo.Username;
+            account.FullName = accountInfo.FullName;
             account.FollowersCount = accountInfo.FollowerCount;
             account.FollowingsCount = accountInfo.FollowingCount;
         }
         
-        _commandInstagramAccountRepository.UpdateRange(subscription.InstagramAccounts);
+        _commandInstagramAccountRepository.UpdateRange(accounts);
         await _unitOfWork.SaveChangesAsync();
     }
 
