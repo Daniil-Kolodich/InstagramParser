@@ -33,7 +33,6 @@ export class SubscriptionService {
 	}
 
 	public getById(id: number): ObservableResults<GetSubscriptionResponse> {
-		console.log('get by id called!!!', id);
 		const query = new HttpParams({ fromObject: { id: id } });
 		const response = this.httpClient
 			.get<GetSubscriptionResponse>(this.url + 'Id', { params: query })

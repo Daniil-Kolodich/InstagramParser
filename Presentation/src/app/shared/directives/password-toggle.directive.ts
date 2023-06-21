@@ -20,7 +20,7 @@ export class PasswordToggleDirective implements AfterContentInit {
 
 			this.renderer.listen(this.icon._elementRef.nativeElement, 'click', () => this.toggleVisibility());
 		} else {
-			console.log(
+			console.error(
 				`Unable to apply password toggling: icon ${this.icon ? 'exists' : 'missing'}, input ${
 					this.input ? 'exists' : 'missing'
 				}`

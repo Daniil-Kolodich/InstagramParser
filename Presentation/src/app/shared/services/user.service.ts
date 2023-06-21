@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ReplaySubject, Subject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { SubjectResults, ObservableResults } from '../types';
 import { observe, process } from '../functions';
 
@@ -22,7 +22,6 @@ export class UserService {
 	}
 
 	public getUserById(): void {
-		console.log('getting value');
 		const response = this.httpClient.get<GetUserResponse>(this.url + 'GetById');
 		process(response, this._user$);
 	}

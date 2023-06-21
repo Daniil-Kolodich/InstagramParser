@@ -9,7 +9,6 @@ export abstract class TitledComponent extends DestroyableComponent implements On
 	protected readonly headerService = inject(HeaderService);
 
 	public override ngOnDestroy(): void {
-		console.log('on destroy from titled one');
 		this.headerService.reset();
 		super.ngOnDestroy();
 	}

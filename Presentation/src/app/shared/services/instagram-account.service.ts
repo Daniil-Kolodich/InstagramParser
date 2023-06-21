@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
@@ -11,8 +11,7 @@ export class InstagramAccountService {
 
 	public getByUserName(userName: string): Observable<GetInstagramAccountResponse> {
 		const query = new HttpParams({ fromObject: { userName: userName } });
-		// return of();
-		// TODO work here to handle lower and upper case plz
+
 		return this.httpClient.get<GetInstagramAccountResponse>(this.url + 'GetByName', { params: query });
 	}
 }

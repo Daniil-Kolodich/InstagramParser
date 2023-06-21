@@ -32,7 +32,6 @@ export class AuthenticationService implements OnDestroy {
 	};
 
 	public constructor() {
-		console.log('ctor called for auth service');
 		this._tokenHandlerId = setInterval(() => this.getToken(), 30000);
 	}
 
