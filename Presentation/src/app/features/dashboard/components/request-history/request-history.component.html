@@ -1,7 +1,6 @@
 <mat-card *ngIf="{ value: subscriptions$.Value | async, loading: subscriptions$.Loading | async } as vm">
 	<mat-card-header>
 		<mat-card-title>Requests history</mat-card-title>
-		<mat-card-subtitle *ngIf="vm.value">Total requests count: {{vm.value.length}}</mat-card-subtitle>
 	</mat-card-header>
 
 	<mat-divider class="m-3"></mat-divider>
