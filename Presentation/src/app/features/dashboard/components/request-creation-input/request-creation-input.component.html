@@ -16,7 +16,7 @@
 		<mat-error>Please select valid account</mat-error>
 		<mat-autocomplete #auto [displayWith]="displayWith">
 			<mat-option *ngIf="vm.value !== null" [value]="vm.value">
-				{{vm.value.userName}}
+				{{vm.value.UserName}}
 			</mat-option>
 			<mat-option *ngIf="vm.error !== null && vm.value === null" disabled>Not Found</mat-option>
 			<mat-option *ngIf="vm.loading" disabled>Searching...</mat-option>
@@ -31,20 +31,20 @@
 
 <mat-card>
 	<mat-card-header>
-		<mat-card-title>Selected {{type}} accounts : {{accountControls.controls.length}}</mat-card-title>
+		<mat-card-title>Selected {{type}} accounts : {{form.Accounts.controls.length}}</mat-card-title>
 		<mat-card-subtitle *ngIf="form.Source.value !== SubscriptionSource.AccountsList">
 			Total linked accounts: {{getLinkedAccounts()}}
 		</mat-card-subtitle>
 	</mat-card-header>
 	<mat-card-content class="d-flex flex-wrap w-100 flex-fill justify-content-evenly">
-		<mat-card *ngFor="let control of accountControls.controls"
+		<mat-card *ngFor="let control of form.Accounts.controls"
 				  class="mat-mdc-elevation-specific mat-elevation-z12 m-4 position-relative pb-4">
 			<mat-card-header>
-				<mat-card-title *ngIf="control.value">{{control.value.fullName}}</mat-card-title>
-				<mat-card-subtitle>@{{control.value.userName}}</mat-card-subtitle>
+				<mat-card-title *ngIf="control.value">{{control.value.FullName}}</mat-card-title>
+				<mat-card-subtitle>@{{control.value.UserName}}</mat-card-subtitle>
 				<mat-card-subtitle *ngIf="form.Source.value !== SubscriptionSource.AccountsList">
 					Linked accounts:
-					{{form.Source.value === SubscriptionSource.AccountsFollowers ? control.value.followersCount : control.value.followingsCount}}
+					{{form.Source.value === SubscriptionSource.AccountsFollowers ? control.value.FollowersCount : control.value.FollowingsCount}}
 				</mat-card-subtitle>
 			</mat-card-header>
 			<button mat-fab color="warn" class="absolute-rb-corner" (click)="removeControl(control)">

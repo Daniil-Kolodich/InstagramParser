@@ -1,23 +1,10 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, NonNullableFormBuilder, ValidationErrors } from '@angular/forms';
-import {
-	catchError,
-	debounceTime,
-	filter,
-	finalize,
-	mergeMap,
-	of,
-	skip,
-	startWith,
-	Subject,
-	switchMap,
-	takeUntil,
-	tap,
-} from 'rxjs';
+import { catchError, debounceTime, filter, finalize, of, skip, startWith, Subject, switchMap, takeUntil } from 'rxjs';
 import { DestroyableComponent } from '../../../../shared/components/destroyable.component';
 import {
-	GetInstagramAccountResponse,
 	InstagramAccountService,
+	InstagramAccountRequest,
 } from '../../../../shared/services/instagram-account.service';
 import { ObservableResults } from '../../../../shared/types';
 import { SubscriptionSource } from '../../../../shared/services/subscription.service';
@@ -35,29 +22,18 @@ export class RequestCreationInputComponent extends DestroyableComponent implemen
 	@Input() public type!: string;
 	@Input() public form!: SourceAndAccountsControls;
 
-	public readonly accountControls = new FormArray<FormControl<GetInstagramAccountResponse>>([]);
-	public readonly searchInput = new FormControl<GetInstagramAccountResponse | string>('', [correctInstagramAccount]);
+	public readonly searchInput = new FormControl<InstagramAccountRequest | string>('', [correctInstagramAccount]);
 	public readonly SubscriptionSource = SubscriptionSource;
 
 	// TODO: need to fix this not to handle manually each time plz
 	private notFound$ = new Subject<unknown | null>();
 	private loading$ = new Subject<boolean>();
-	public account$: ObservableResults<GetInstagramAccountResponse> = {
+	public account$: ObservableResults<InstagramAccountRequest> = {
 		Value: of(null),
 		Error: this.notFound$.asObservable(),
 		Loading: this.loading$.asObservable(),
 	};
 	public ngOnInit(): void {
-		this.accountControls.valueChanges
-			.pipe(
-				takeUntil(this.destroy$),
-				tap(() => this.form.Accounts.clear()),
-				mergeMap((value) => value)
-			)
-			.subscribe((value) => {
-				this.form.Accounts.push(this.formBuilder.control(value.id));
-			});
-
 		// this.addAccount({ userName: 'danon', id: '1dn', fullName: 'Daniil Kolodich' });
 		// this.addAccount({ userName: 'danissimo', id: '2do', fullName: 'Daniil Mishenin' });
 		// this.addAccount({ userName: 'koshkina', id: '3ka', fullName: 'Nastya Shiba' });
@@ -89,42 +65,43 @@ export class RequestCreationInputComponent extends DestroyableComponent implemen
 		);
 	}
 
-	private test(): GetInstagramAccountResponse {
+	private test(): InstagramAccountRequest {
 		return {
-			userName: 'userName',
-			id: 'id',
-			fullName: 'fullName',
-			followersCount: 100,
-			followingsCount: 45,
+			UserName: 'userName',
+			Id: 'id',
+			FullName: 'fullName',
+			FollowersCount: 100,
+			FollowingsCount: 45,
 		};
 	}
 
-	public addAccount(account: GetInstagramAccountResponse | string | null) {
+	public addAccount(account: InstagramAccountRequest | string | null) {
 		if (account === null || isString(account)) {
 			return;
 		}
 
 		this.account$.Value = this.account$.Value.pipe(skip(1));
 		this.searchInput.reset('', { emitEvent: true });
-		this.accountControls.push(this.formBuilder.control(account));
+
+		this.form.Accounts.push(this.formBuilder.control(account));
 	}
 
-	public removeControl(control: FormControl<GetInstagramAccountResponse>) {
-		const index = this.accountControls.controls.indexOf(control);
-		this.accountControls.removeAt(index, { emitEvent: true });
+	public removeControl(control: FormControl<InstagramAccountRequest>) {
+		const index = this.form.Accounts.controls.indexOf(control);
+		this.form.Accounts.removeAt(index, { emitEvent: true });
 	}
 
-	public displayWith(account: GetInstagramAccountResponse): string {
-		return account.userName;
+	public displayWith(account: InstagramAccountRequest): string {
+		return account.UserName;
 	}
 
 	public getLinkedAccounts(): number {
 		let sum = 0;
-		for (const control of this.accountControls.controls) {
+		for (const control of this.form.Accounts.controls) {
 			sum +=
 				this.form.Source.value === SubscriptionSource.AccountsFollowers
-					? control.value.followersCount
-					: control.value.followingsCount;
+					? control.value.FollowersCount
+					: control.value.FollowingsCount;
 		}
 
 		return sum;
@@ -135,11 +112,9 @@ export class RequestCreationInputComponent extends DestroyableComponent implemen
 
 export type SourceAndAccountsControls = {
 	Source: FormControl<SubscriptionSource>;
-	Accounts: FormArray<FormControl<string>>;
+	Accounts: FormArray<FormControl<InstagramAccountRequest>>;
 };
 
-function correctInstagramAccount(
-	control: AbstractControl<GetInstagramAccountResponse | string>
-): ValidationErrors | null {
+function correctInstagramAccount(control: AbstractControl<InstagramAccountRequest | string>): ValidationErrors | null {
 	return isString(control.value) && control.value.length > 0 ? { invalidAccount: { value: control.value } } : null;
 }

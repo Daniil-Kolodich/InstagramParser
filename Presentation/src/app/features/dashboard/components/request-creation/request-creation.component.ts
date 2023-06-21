@@ -13,6 +13,7 @@ import { NotificationService } from '../../../../shared/services/notification.se
 import { DestroyableComponent } from '../../../../shared/components/destroyable.component';
 import { filter, map, takeUntil } from 'rxjs';
 import { nonNull } from '../../../../shared/functions';
+import { InstagramAccountRequest } from '../../../../shared/services/instagram-account.service';
 
 @Component({
 	selector: 'app-request-creation',
@@ -31,8 +32,8 @@ export class RequestCreationComponent extends DestroyableComponent implements On
 
 	public ngOnInit() {
 		this.form = this.formBuilder.group({
-			Target: this.formBuilder.array<string>([], [Validators.required]),
-			Source: this.formBuilder.array<string>([], [Validators.required]),
+			Target: this.formBuilder.array<InstagramAccountRequest>([], [Validators.required]),
+			Source: this.formBuilder.array<InstagramAccountRequest>([], [Validators.required]),
 			SubscriptionTarget: this.formBuilder.control<SubscriptionSource>(SubscriptionSource.AccountsList, [
 				Validators.required,
 			]),

@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { delay, repeat, ReplaySubject, Subject, tap } from 'rxjs';
 import { ObservableResults, SubjectResults } from '../types';
 import { observe, observeOnce, process } from '../functions';
-import { GetInstagramAccountResponse } from './instagram-account.service';
+import { InstagramAccountRequest } from './instagram-account.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -63,15 +63,15 @@ export type GetSubscriptionResponse = {
 	target: SubscriptionSource;
 	status: SubscriptionStatus;
 	type: SubscriptionType;
-	sourceAccounts: GetInstagramAccountResponse[];
-	targetAccounts: GetInstagramAccountResponse[];
-	selectedAccounts: GetInstagramAccountResponse[];
+	sourceAccounts: InstagramAccountRequest[];
+	targetAccounts: InstagramAccountRequest[];
+	selectedAccounts: InstagramAccountRequest[];
 	createdAt: Date;
 };
 
 export type FollowCheckRequest = {
-	Source: string[];
-	Target: string[];
+	Source: InstagramAccountRequest[];
+	Target: InstagramAccountRequest[];
 	SubscriptionSource: SubscriptionSource;
 	SubscriptionTarget: SubscriptionSource;
 };
