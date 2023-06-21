@@ -1,10 +1,23 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, NonNullableFormBuilder, ValidationErrors } from '@angular/forms';
-import { catchError, debounceTime, filter, finalize, of, skip, startWith, Subject, switchMap, takeUntil } from 'rxjs';
+import {
+	catchError,
+	debounceTime,
+	filter,
+	finalize,
+	map,
+	of,
+	skip,
+	startWith,
+	Subject,
+	switchMap,
+	takeUntil,
+} from 'rxjs';
 import { DestroyableComponent } from '../../../../shared/components/destroyable.component';
 import {
 	InstagramAccountService,
 	InstagramAccountRequest,
+	toRequest,
 } from '../../../../shared/services/instagram-account.service';
 import { ObservableResults } from '../../../../shared/types';
 import { SubscriptionSource } from '../../../../shared/services/subscription.service';
@@ -45,7 +58,7 @@ export class RequestCreationInputComponent extends DestroyableComponent implemen
 		// TODO : refactor this to make use of some smart function
 		this.account$.Value = this.searchInput.valueChanges.pipe(
 			takeUntil(this.destroy$),
-			debounceTime(300),
+			debounceTime(500),
 			filter(isString),
 			filter((value) => value.length > 0),
 			// TODO : replace with observeOnce call if possible
@@ -54,6 +67,7 @@ export class RequestCreationInputComponent extends DestroyableComponent implemen
 				this.loading$.next(true);
 
 				return this.instagramAccountService.getByUserName(value).pipe(
+					map(toRequest),
 					startWith(this.test()),
 					finalize(() => this.loading$.next(false)),
 					catchError(() => {

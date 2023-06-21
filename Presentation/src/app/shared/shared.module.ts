@@ -11,9 +11,16 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { FooterComponent } from './components/footer/footer.component';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
+import { PrimarySubscriptionInfoPipe } from './pipes/primary-subscription-info.pipe';
 
 @NgModule({
-	declarations: [NotificationComponent, PasswordToggleDirective, HeaderComponent, FooterComponent],
+	declarations: [
+		NotificationComponent,
+		PasswordToggleDirective,
+		HeaderComponent,
+		FooterComponent,
+		PrimarySubscriptionInfoPipe,
+	],
 	imports: [
 		CommonModule,
 		MatButtonModule,
@@ -24,6 +31,6 @@ import { RouterLink } from '@angular/router';
 		MatIconModule,
 		RouterLink,
 	],
-	exports: [PasswordToggleDirective, HeaderComponent, FooterComponent],
+	exports: [PasswordToggleDirective, HeaderComponent, FooterComponent, PrimarySubscriptionInfoPipe],
 })
 export class SharedModule {}

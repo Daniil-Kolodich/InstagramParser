@@ -1,4 +1,47 @@
 <div
-	*ngIf="{value: subscription$?.Value | async, error: subscription$?.Error | async, loading: subscription$?.Loading | async} as vm">
-	{{ vm | json }}
+	*ngIf="{value: subscription$?.Value | async, loading: subscription$?.Loading | async, error: subscription$?.Error | async} as vm">
+	<mat-card>
+		<mat-card-header *ngIf="vm.value">
+			<mat-card-title>Request #{{vm.value.id}} from {{vm.value.createdAt | date: 'medium'}} </mat-card-title>
+			<mat-card-subtitle>Status: {{SubscriptionStatus[vm.value.status]}}</mat-card-subtitle>
+		</mat-card-header>
+		<mat-card-content *ngIf="vm.value && lists">
+			<mat-accordion multi>
+				<mat-expansion-panel>
+					<mat-expansion-panel-header>
+						<mat-panel-title>Primary information</mat-panel-title>
+					</mat-expansion-panel-header>
+
+					<div class="d-flex flex-wrap flex-fill justify-content-evenly">
+						<mat-card *ngFor="let info of vm.value | primarySubscriptionInfo"
+								  class="mat-mdc-elevation-specific mat-elevation-z8 m-2 position-relative p-4">
+							<mat-card-title>{{info.Title}}</mat-card-title>
+							<mat-card-subtitle>{{info.Description}}</mat-card-subtitle>
+						</mat-card>
+					</div>
+				</mat-expansion-panel>
+
+				<mat-expansion-panel *ngFor="let list of lists" [disabled]="list.Accounts.length === 0">
+					<mat-expansion-panel-header>
+						<mat-panel-title>{{list.Title}}</mat-panel-title>
+						<mat-panel-description>Total accounts: {{list.Accounts.length}}</mat-panel-description>
+					</mat-expansion-panel-header>
+
+					<div class="d-flex flex-wrap w-100 flex-fill justify-content-evenly">
+						<mat-card *ngFor="let account of list.Accounts"
+								  class="mat-mdc-elevation-specific mat-elevation-z12 m-4 position-relative pb-4">
+							<mat-card-header>
+								<mat-card-title>{{account.fullName}}</mat-card-title>
+								<mat-card-subtitle>@{{account.userName}}</mat-card-subtitle>
+							</mat-card-header>
+						</mat-card>
+					</div>
+				</mat-expansion-panel>
+			</mat-accordion>
+		</mat-card-content>
+
+		<mat-card-footer *ngIf="vm.loading === true" class="m-3 p-5">
+			<mat-progress-bar mode="query"></mat-progress-bar>
+		</mat-card-footer>
+	</mat-card>
 </div>

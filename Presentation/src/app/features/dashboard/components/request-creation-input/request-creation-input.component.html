@@ -16,7 +16,7 @@
 		<mat-error>Please select valid account</mat-error>
 		<mat-autocomplete #auto [displayWith]="displayWith">
 			<mat-option *ngIf="vm.value !== null" [value]="vm.value">
-				{{vm.value.UserName}}
+				@{{vm.value.UserName}}{{vm.value.FullName.length > 0 ? ' : ' + vm.value.FullName : ''}}
 			</mat-option>
 			<mat-option *ngIf="vm.error !== null && vm.value === null" disabled>Not Found</mat-option>
 			<mat-option *ngIf="vm.loading" disabled>Searching...</mat-option>
