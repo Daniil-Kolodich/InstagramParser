@@ -2,9 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import {
 	GetSubscriptionResponse,
 	SubscriptionService,
-	SubscriptionSource,
 	SubscriptionStatus,
-	SubscriptionType,
 } from '../../../../shared/services/subscription.service';
 import { ObservableResults } from '../../../../shared/types';
 

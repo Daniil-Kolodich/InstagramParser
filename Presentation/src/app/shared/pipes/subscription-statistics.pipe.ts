@@ -1,10 +1,5 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
-import {
-	GetSubscriptionResponse,
-	SubscriptionSource,
-	SubscriptionStatus,
-	SubscriptionType,
-} from '../services/subscription.service';
+import { GetSubscriptionResponse, SubscriptionStatus } from '../services/subscription.service';
 import { DatePipe } from '@angular/common';
 
 @Pipe({
