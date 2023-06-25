@@ -15,7 +15,6 @@ internal class FakeUserManager : IUserManager
             "Instagram 76.0.0.15.395 Android (24/7.0; 640dpi; 1440x2560; samsung; SM-G930F; herolte; samsungexynos8890; en_US; 138226743)");
     }
 
-    // TODO: Add escaping here
     public async Task<User> GetUserById(string id, CancellationToken cancellationToken)
     {
         var response = await _httpClient.GetAsync($"https://i.instagram.com/api/v1/users/{id}/info/", cancellationToken);

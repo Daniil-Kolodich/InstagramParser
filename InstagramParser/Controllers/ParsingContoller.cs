@@ -26,7 +26,6 @@ public class ParsingController : ControllerBase
 
         if (id is not null)
         {
-            // TODO: should be fire and forget task
             await _parsingService.Parse(id.Value);
             return Ok();
         }

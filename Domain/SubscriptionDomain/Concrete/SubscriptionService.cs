@@ -59,7 +59,6 @@ internal class SubscriptionService : ISubscriptionService
 
     public async Task<GetSubscriptionResponse> FollowCheck(FollowCheckRequest request)
     {
-        // TODO: use transaction when saving nested objects separately
         var subscription = new Subscription()
         {
             Source = (int)request.SubscriptionSource,

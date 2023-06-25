@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace InstagramParser.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("[controller]")]
 public class InstagramAccountController : ControllerBase
 {

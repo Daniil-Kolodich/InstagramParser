@@ -19,12 +19,13 @@ internal class ParsingService : IParsingService
     private readonly IFollowManager _followersManager;
     private readonly IFollowManager _followingsManager;
     private readonly IUserManager _userManager;
+
     public ParsingService(IQueryRepository<Subscription> querySubscriptionRepository,
         IInstagramAccountService instagramAccountService,
         IUnitOfWork unitOfWork,
-        ICommandRepository<Subscription> commandSubscriptionRepository, 
-        IFollowersManager followersManager, 
-        IFollowingsManager followingsManager, 
+        ICommandRepository<Subscription> commandSubscriptionRepository,
+        IFollowersManager followersManager,
+        IFollowingsManager followingsManager,
         IUserManager userManager, ICommandRepository<InstagramAccount> commandInstagramAccountRepository)
     {
         _querySubscriptionRepository = querySubscriptionRepository;
@@ -53,7 +54,7 @@ internal class ParsingService : IParsingService
         if (subscription.Status == (int)SubscriptionStatus.Pending)
         {
             await PrepareNestedListsForProcessing(subscription);
-        
+
             subscription.Status = (int)SubscriptionStatus.ReadyForProcessing;
             _commandSubscriptionRepository.Update(subscription);
             await _unitOfWork.SaveChangesAsync();
@@ -66,9 +67,8 @@ internal class ParsingService : IParsingService
             return;
         }
 
-        var (followManager, sources, targets) = PrepareForParsing(subscription);
+        var (followManager, sources, targets) = _instagramAccountService.PrepareForParsing(subscription);
 
-        //  !!! source list should be subscribed to target list !!!
         foreach (var target in targets)
         {
             var accountsLeft = sources.Where(x => !x.DeclinedAccount()).ToArray();
@@ -76,24 +76,22 @@ internal class ParsingService : IParsingService
             var searchTask = IsChunksFaster(target, accountsLeft, followManager)
                 ? SearchInChunks(accountsLeft, followManager, target)
                 : SearchByName(accountsLeft, followManager, target);
-            
-            // will this actually update source accounts ?
+
             _instagramAccountService.DeclineAll(await searchTask, subscription);
             await _unitOfWork.SaveChangesAsync();
         }
-
-        await SetAdditionalInformationForWinners(subscription.MatchingAccounts());
 
         subscription.Status = (int)SubscriptionStatus.Completed;
         _commandSubscriptionRepository.Update(subscription);
         await _unitOfWork.SaveChangesAsync();
     }
 
-    internal static async Task<InstagramAccount[]> SearchByName(InstagramAccount[] accountsLeft, IFollowManager followManager,
+    internal static async Task<InstagramAccount[]> SearchByName(InstagramAccount[] accountsLeft,
+        IFollowManager followManager,
         InstagramAccount target)
     {
         var result = new List<InstagramAccount>();
-        
+
         foreach (var possibleChild in accountsLeft)
         {
             var searchResults = await followManager.Search(target.InstagramId, possibleChild.UserName,
@@ -143,104 +141,24 @@ internal class ParsingService : IParsingService
             var targetAccounts = pendingOriginAccounts
                 .Where(InstagramAccountExtensions.TargetAccount)
                 .Select(a => (a, (SubscriptionSource)subscription.Target));
-            
+
             accounts = sourceAccounts.Concat(targetAccounts).ToArray();
         }
 
-        // TODO: Performance check later
         foreach (var (account, source) in accounts)
         {
-            // can be done more async i think
             if (source == SubscriptionSource.AccountsFollowers)
             {
-                var followers = await FetchChildren(account.InstagramId, CancellationToken.None, _followersManager);
-
-                await _instagramAccountService.AddFollowers(account, followers, subscription);
+                await _instagramAccountService.AddFollowers(account, subscription);
             }
 
             if (source == SubscriptionSource.AccountsFollowings)
             {
-                var followings = await FetchChildren(account.InstagramId, CancellationToken.None, _followingsManager);
-
-                await _instagramAccountService.AddFollowings(account, followings, subscription);
+                await _instagramAccountService.AddFollowings(account, subscription);
             }
 
             await _unitOfWork.SaveChangesAsync();
         }
-        
-        // _commandSubscriptionRepository.Update(subscription);
-        // await _unitOfWork.SaveChangesAsync();
-    }
-
-    internal async Task<string[]> FetchChildren(string instagramId, CancellationToken cancellationToken, IFollowManager manager)
-    {
-        var result = new List<string>();
-        foreach (var chunk in await manager.Get(instagramId, null, cancellationToken))
-        {
-            result.AddRange(chunk.Select(x => x.Pk));            
-        }
-
-        return result.ToArray();
-    }
-
-    internal async Task SetAdditionalInformationForWinners(IEnumerable<InstagramAccount> accounts)
-    {
-        foreach (var account in accounts)
-        {
-            var accountInfo = await _userManager.GetUserById(account.InstagramId, CancellationToken.None);
-            account.UserName = accountInfo.Username;
-            account.FullName = accountInfo.FullName;
-            account.FollowersCount = accountInfo.FollowerCount;
-            account.FollowingsCount = accountInfo.FollowingCount;
-        }
-        
-        _commandInstagramAccountRepository.UpdateRange(accounts);
-        await _unitOfWork.SaveChangesAsync();
-    }
-
-    internal (IFollowManager, InstagramAccount[], InstagramAccount[]) PrepareForParsing(Subscription subscription)
-    {
-        var sources = subscription
-            .InstagramAccounts
-            .Where(a => a.OriginAccount() && a.SourceAccount())
-            .ToList();
-        
-        var targets = subscription
-            .InstagramAccounts
-            .Where(a => a.OriginAccount() && a.TargetAccount())
-            .ToList();
-
-        
-        if (subscription.Source != (int)SubscriptionSource.AccountsList)
-        {
-            sources = subscription.InstagramAccounts.Where(x => x.IsChildOf(sources)).ToList();
-        }
-
-        if (subscription.Target != (int)SubscriptionSource.AccountsList)
-        {
-            targets = subscription.InstagramAccounts.Where(x => x.IsChildOf(targets)).ToList();
-        }
-
-        var isSearchingFollowers = IsFollowersFaster(sources, targets,
-            _followersManager.ChildrenPerRequest(), _followingsManager.ChildrenPerRequest());
-
-        // TODO: idk will later stuff work because of this swap
-        // Debug.Assert('Who cares')
-        return isSearchingFollowers
-            ? (_followersManager, sources.ToArray(), targets.ToArray())
-            : (_followingsManager, targets.ToArray(), sources.ToArray());
-    }
-
-    
-    internal static bool IsFollowersFaster(IEnumerable<InstagramAccount> influencers, IEnumerable<InstagramAccount> subs, int followersBatchSize, int followingsBatchSize)
-    {
-        var totalFollowers = influencers.Sum(x => x.FollowersCount);
-        var totalFollowings = subs.Sum(x => x.FollowingsCount);
-
-        var followersRequests = totalFollowers / followersBatchSize;
-        var followingsRequests = totalFollowings / followingsBatchSize;
-
-        return followersRequests < followingsRequests;
     }
 
     internal static bool IsChunksFaster(InstagramAccount parent, InstagramAccount[] children, IFollowManager manager)
