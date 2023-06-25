@@ -16,15 +16,14 @@ public static class SubscriptionExtensions
         {
             return Enumerable.Empty<InstagramAccount>();
         }
-        
-        var parents = subscription.TargetOriginAccounts().ToList();
-        if ((SubscriptionSource)subscription.Target != SubscriptionSource.AccountsList)
+
+        if ((SubscriptionSource)subscription.Source != SubscriptionSource.AccountsList)
         {
-            var children = subscription.InstagramAccounts.Where(a => a.IsChildOf(parents)).ToList();
-            parents.Clear();
-            parents.AddRange(children);
+            var parents = subscription.SourceOriginAccounts();
+
+            return subscription.InstagramAccounts.Where(a => a.IsChildOf(parents) && !a.DeclinedAccount());
         }
 
-        return subscription.InstagramAccounts.Where(a => a.IsChildOf(parents) && !a.DeclinedAccount());
+        return subscription.SourceOriginAccounts().Where(a => !a.DeclinedAccount());
     }
 }
