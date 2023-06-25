@@ -23,6 +23,7 @@
 		</mat-autocomplete>
 	</mat-form-field>
 	<button type="button" mat-flat-button class="w-25 h-56px" color="accent"
+			tabindex="-1"
 			[disabled]="searchInput.value === null || isString(searchInput.value) || searchInput.invalid"
 			(click)="addAccount(searchInput.value)">
 		Add

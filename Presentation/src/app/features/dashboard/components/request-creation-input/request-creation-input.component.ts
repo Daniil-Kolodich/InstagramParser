@@ -38,7 +38,6 @@ export class RequestCreationInputComponent extends DestroyableComponent implemen
 	public readonly searchInput = new FormControl<InstagramAccountRequest | string>('', [correctInstagramAccount]);
 	public readonly SubscriptionSource = SubscriptionSource;
 
-	// TODO: need to fix this not to handle manually each time plz
 	private notFound$ = new Subject<unknown | null>();
 	private loading$ = new Subject<boolean>();
 	public account$: ObservableResults<InstagramAccountRequest> = {
@@ -47,28 +46,17 @@ export class RequestCreationInputComponent extends DestroyableComponent implemen
 		Loading: this.loading$.asObservable(),
 	};
 	public ngOnInit(): void {
-		// this.addAccount({ userName: 'danon', id: '1dn', fullName: 'Daniil Kolodich' });
-		// this.addAccount({ userName: 'danissimo', id: '2do', fullName: 'Daniil Mishenin' });
-		// this.addAccount({ userName: 'koshkina', id: '3ka', fullName: 'Nastya Shiba' });
-		// this.addAccount({ userName: 'yarick', id: '4yk', fullName: '9rolsav Ozimok' });
-		// this.addAccount({ userName: 'kser', id: '5kr', fullName: 'Yura Chirko' });
-		// this.addAccount({ userName: 'gleb', id: '6gb', fullName: 'Gleb Punko' });
-		// this.addAccount({ userName: 'shevchik', id: '7sk', fullName: 'Masksim Shev4ik' });
-
-		// TODO : refactor this to make use of some smart function
 		this.account$.Value = this.searchInput.valueChanges.pipe(
 			takeUntil(this.destroy$),
-			debounceTime(500),
+			debounceTime(1000),
 			filter(isString),
 			filter((value) => value.length > 0),
-			// TODO : replace with observeOnce call if possible
 			switchMap((value) => {
 				this.notFound$.next(null);
 				this.loading$.next(true);
 
 				return this.instagramAccountService.getByUserName(value).pipe(
 					map(toRequest),
-					startWith(this.test()),
 					finalize(() => this.loading$.next(false)),
 					catchError(() => {
 						this.notFound$.next({});
@@ -78,17 +66,6 @@ export class RequestCreationInputComponent extends DestroyableComponent implemen
 			})
 		);
 	}
-
-	private test(): InstagramAccountRequest {
-		return {
-			UserName: 'userName',
-			Id: 'id',
-			FullName: 'fullName',
-			FollowersCount: 100,
-			FollowingsCount: 45,
-		};
-	}
-
 	public addAccount(account: InstagramAccountRequest | string | null) {
 		if (account === null || isString(account)) {
 			return;

@@ -10,9 +10,9 @@ export type ControlsOf<T extends Record<string, unknown>> = {
 };
 
 export type SubjectResults<T> = {
-	Value: ReplaySubject<T | null>;
-	Error: ReplaySubject<unknown | null>;
-	Loading: ReplaySubject<boolean>;
+	Value: Subject<T | null>;
+	Error: Subject<unknown | null>;
+	Loading: Subject<boolean>;
 };
 
 export type ObservableResults<T> = {
